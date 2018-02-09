@@ -8,9 +8,11 @@ const addCoinButtonClicked = function() {
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
   const coin = document.querySelector('#coin-select').value;
+  const amount = document.querySelector('#coin-amount').value;
   const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
 
-  portfolioListView.display(coin);
+
+  portfolioListView.display(coin, amount);
   coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
   coinData.getData();
 }

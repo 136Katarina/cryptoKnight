@@ -77,9 +77,11 @@ const addCoinButtonClicked = function() {
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
   const coin = document.querySelector('#coin-select').value;
+  const amount = document.querySelector('#coin-amount').value;
   const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
 
-  portfolioListView.display(coin);
+
+  portfolioListView.display(coin, amount);
   coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
   coinData.getData();
 }
@@ -195,13 +197,13 @@ PortfolioListView.prototype.populate = function(data) {
     }.bind(this))
 };
 
-PortfolioListView.prototype.display = function(symbol) {
+PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
   <tr>
     <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
     <td>${symbol}</td>
     <td></td>
-    <td></td>
+    <td>${amount}</td>
     <td></td>
     <td></td>
   </tr>
@@ -210,7 +212,9 @@ PortfolioListView.prototype.display = function(symbol) {
 
 PortfolioListView.prototype.insertCoinData = function(data) {
   tr = this.container.lastElementChild.children;
+  const amount = tr[3].innerHTML;
   tr[2].innerHTML = data.price;
+  tr[4].innerHTML = amount * data.price;
   tr[5].innerHTML = data.change.day;
 };
 
