@@ -1,4 +1,4 @@
-// const Request = require('./services/request.js');
+const Request = require('./services/request.js');
 const AllCoinsData = require('./models/AllCoinsData.js');
 const CoinData = require('./models/CoinData.js');
 const CoinSelectView = require('./views/CoinSelectView.js');
@@ -10,7 +10,17 @@ const addCoinButtonClicked = function() {
   const coin = document.querySelector('#coin-select').value;
   const amount = document.querySelector('#coin-amount').value;
   const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
+  const request = new Request('http://localhost:9000/api/portfolio');
 
+  let body = {
+    name: "Jardine",
+    portfolio: {
+      coin: coin,
+      amount: amount
+    }
+  }
+
+  request.post(body);
 
   portfolioListView.display(coin, amount);
   coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);

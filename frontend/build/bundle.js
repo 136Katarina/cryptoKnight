@@ -67,7 +67,7 @@
 /* 0 */
 /***/ (function(module, exports, __webpack_require__) {
 
-// const Request = require('./services/request.js');
+const Request = __webpack_require__(1);
 const AllCoinsData = __webpack_require__(3);
 const CoinData = __webpack_require__(5);
 const CoinSelectView = __webpack_require__(2);
@@ -79,7 +79,17 @@ const addCoinButtonClicked = function() {
   const coin = document.querySelector('#coin-select').value;
   const amount = document.querySelector('#coin-amount').value;
   const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
+  const request = new Request('http://localhost:9000/api/portfolio');
 
+  let body = {
+    name: "Jardine",
+    portfolio: {
+      coin: coin,
+      amount: amount
+    }
+  }
+
+  request.post(body);
 
   portfolioListView.display(coin, amount);
   coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
@@ -120,14 +130,14 @@ Request.prototype.get = function(callback) {
   request.send();
 };
 
-Request.prototype.post = function(callback, body) {
+// Request.prototype.post = function(callback, body) {
+Request.prototype.post = function(body) {
   const request = new XMLHttpRequest();
   request.open('POST', this.url);
   request.setRequestHeader('Content-Type', 'application/json');
   request.addEventListener('load', function() {
     if(this.status != 201) return;
     const responseBody = JSON.parse(this.responseText);
-    callback(responseBody);
   })
   request.send(JSON.stringify(body));
 };

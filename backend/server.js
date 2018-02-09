@@ -15,6 +15,39 @@ MongoClient.connect('mongodb://localhost:27017', function(err, client) {
     return console.log(err);
   }
 
+  server.get('/api/portfolio', function(req, res) {
+    db.collection('portfolios').find().toArray(function(err, result) {
+      res.status(200);
+      res.json(result);
+    })
+  });
+
+  server.post('/api/portfolio', function(req, res){
+    db.collection('portfolios').save(req.body, function(err, result){
+      if(err){
+        console.log(err);
+        res.status(500);
+        res.send();
+      }
+
+      res.status(201);
+      res.json(result.ops[0]);
+
+      console.log('save it yo');
+    })
+  })
+
+  server.delete('/api/portfolio', function(req, res) {
+    db.collection('portfolios').remove(function(err, result) {
+      if(err) {
+        res.status(500);
+        res.send();
+      }
+      res.status(204);
+      res.send();
+    })
+  })
+
   // server.get('/api/countries', function(req, res) {
   //   db.collection('countries').find().toArray(function(err, result) {
   //     res.status(200);
