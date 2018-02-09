@@ -1,5 +1,5 @@
 const PortfolioListView = function(container) {
-  this.container = container;
+  this.container = container.childNodes[3];
 }
 
 PortfolioListView.prototype.populate = function(data) {
@@ -19,6 +19,12 @@ PortfolioListView.prototype.display = function(symbol) {
     <td></td>
   </tr>
   `
+};
+
+PortfolioListView.prototype.insertCoinData = function(data) {
+  tr = this.container.lastElementChild.children;
+  tr[2].innerHTML = data.price;
+  tr[5].innerHTML = data.change.day;
 };
 
 PortfolioListView.prototype.clear = function() {

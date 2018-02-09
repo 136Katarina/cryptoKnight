@@ -7,6 +7,7 @@ const CoinData = function(url) {
 
 CoinData.prototype.getData = function() {
   let request = new Request(this.url);
+  // request.get(this.onLoad);
   request.get(this.onLoad);
 };
 
