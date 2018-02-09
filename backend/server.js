@@ -22,6 +22,20 @@ MongoClient.connect('mongodb://localhost:27017', function(err, client) {
     })
   });
 
+  server.get('/api/portfolio/:name', function(req, res){
+    // db.collection('portfolios').findOne({_id: ObjectID(req.params.id)}, function(err, result){
+    db.collection('portfolios').findOne({name: req.params.name}, function(err, result){
+
+      if (err) {
+        res.status(500);
+        res.send();
+      }
+
+      res.status(200);
+      res.json(result);
+    });
+  });
+
   server.post('/api/portfolio', function(req, res){
     db.collection('portfolios').save(req.body, function(err, result){
       if(err){

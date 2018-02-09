@@ -83,10 +83,10 @@ const addCoinButtonClicked = function() {
 
   let body = {
     name: "Jardine",
-    portfolio: {
+    portfolio: [{
       coin: coin,
       amount: amount
-    }
+    }]
   }
 
   request.post(body);
@@ -96,15 +96,26 @@ const addCoinButtonClicked = function() {
   coinData.getData();
 }
 
+// const addABunchOfTableStuff = function(){
+//   const portfolioData = new PortfolioData('http://localhost:5000/api/portfolio');
+//   let container = document.querySelector('#portfolio');
+//   const portfolioListView = new PortfolioListView(container);
+
+//   portfolioListView.display(coin, amount);
+//   portfolioData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
+//   portfolioData.getData();
+// }
+
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
 
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
-  allCoinsData.getData();
+  allCoinsData.getData(); 
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
+
 }
 
 window.addEventListener('load', app);
