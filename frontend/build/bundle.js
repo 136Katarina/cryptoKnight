@@ -65,59 +65,76 @@
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Request = __webpack_require__(1);
-
-
-const app = function() {
-
-}
-
-
-window.addEventListener('DOMContentLoaded', app);
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
-const Request = function(url) {
-  this.url = url;
+// const Request = require('./services/request.js');
+
+const display = function(data) {
+  let amount = 2;
+  document.querySelector('#portfolio').innerHTML += `
+    <tr>
+      <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/eth" alt="" /></td>
+      <td>ETH</td>
+      <td>${Number.parseFloat(data.price).toFixed(2)}</td>
+      <td>${amount}</td>
+      <td>${(data.price * amount).toFixed(2)}</td>
+      <td>${data.change.day}</td>
+    </tr>
+  `
+  // console.log(data.ticker);
 }
 
-Request.prototype.get = function(callback) {
+// const app = function() {
+//   let coin = 'btc';
+//   let currency = 'gbp';
+//   // let coinData = new Request(`https://api.cryptonator.com/api/ticker/${coin}-${currency}`);
+//   let coinData = new Request('https://chasing-coins.com/api/v1/std/coin/BTC')
+
+//   coinData.get(display);
+// }
+
+
+// window.addEventListener('DOMContentLoaded', app);
+
+// const populateList = function(countries) {
+//   countries.forEach(function(country){
+//     const ul = document.querySelector('#portfolio')
+//     li = document.createElement('li')
+//     li.innerText = country.name
+//     ul.appendChild(li)
+//   })
+// }
+
+const onRequestComplete = function(data) {
+  if(this.status !== 200) return;
+  const jsonString = this.responseText;
+  const coinData = JSON.parse(jsonString);
+  console.log(coinData);
+  // display(coinData);
+}
+
+const coinRequest = function(symbol) {
   const request = new XMLHttpRequest();
-  request.open('GET', this.url);
-  request.addEventListener('load', function() {
-    if(this.status != 200) return;
-    const responseBody = JSON.parse(this.responseText);
-    callback(responseBody);
-  })
+  request.open("GET", "http://localhost:5000/api/" + symbol);
+  request.addEventListener('load', onRequestComplete);
   request.send();
-};
+}
 
-Request.prototype.post = function(callback, body) {
+const allCoinRequest = function() {
   const request = new XMLHttpRequest();
-  request.open('POST', this.url);
-  request.setRequestHeader('Content-Type', 'application/json');
-  request.addEventListener('load', function() {
-    if(this.status != 201) return;
-    const responseBody = JSON.parse(this.responseText);
-    callback(responseBody);
-  })
-  request.send(JSON.stringify(body));
-};
-
-Request.prototype.delete = function() {
-  const request = new XMLHttpRequest();
-  request.open('DELETE', this.url);
-  request.addEventListener('load', function() {
-    if(this.status != 204) return;
-  })
+  request.open("GET", "http://localhost:5000/api/coins/all");
+  request.addEventListener('load', onRequestComplete);
   request.send();
-};
+}
 
-module.exports = Request;
+const app = function() {
+  coinRequest('btc');
+  allCoinRequest();
+}
+
+window.addEventListener('load', app);
+
+
 
 /***/ })
 /******/ ]);
