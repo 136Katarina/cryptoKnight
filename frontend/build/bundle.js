@@ -69,22 +69,24 @@
 
 // const Request = require('./services/request.js');
 const AllCoinsData = __webpack_require__(3);
+const CoinData = __webpack_require__(5);
 const CoinSelectView = __webpack_require__(2);
+const PortfolioListView = __webpack_require__(4);
 
-const display = function(data) {
-  let amount = 2;
-  document.querySelector('#portfolio').innerHTML += `
-  <tr>
-  <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/eth" alt="" /></td>
-  <td>ETH</td>
-  <td>${Number.parseFloat(data.price).toFixed(2)}</td>
-  <td>${amount}</td>
-  <td>${(data.price * amount).toFixed(2)}</td>
-  <td>${data.change.day}</td>
-  </tr>
-  `
+// const display = function(data) {
+//   let amount = 2;
+//   document.querySelector('#portfolio').innerHTML += `
+//   <tr>
+//   <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/eth" alt="" /></td>
+//   <td>ETH</td>
+//   <td>${Number.parseFloat(data.price).toFixed(2)}</td>
+//   <td>${amount}</td>
+//   <td>${(data.price * amount).toFixed(2)}</td>
+//   <td>${data.change.day}</td>
+//   </tr>
+//   `
   // console.log(data.ticker);
-}
+// }
 
 // const app = function() {
 //   let coin = 'btc';
@@ -107,36 +109,53 @@ const display = function(data) {
 //   })
 // }
 
-const onRequestComplete = function(data) {
-  if(this.status !== 200) return;
-  const jsonString = this.responseText;
-  const coinData = JSON.parse(jsonString);
-  console.log(coinData);
-  // display(coinData);
-}
+// const onRequestComplete = function(data) {
+//   if(this.status !== 200) return;
+//   const jsonString = this.responseText;
+//   const coinData = JSON.parse(jsonString);
+//   console.log(coinData);
+//   // display(coinData);
+// }
 
-const coinRequest = function(symbol) {
-  const request = new XMLHttpRequest();
-  request.open("GET", "http://localhost:5000/api/" + symbol);
-  request.addEventListener('load', onRequestComplete);
-  request.send();
-}
+// const coinRequest = function(symbol) {
+//   const request = new XMLHttpRequest();
+//   request.open("GET", "http://localhost:5000/api/" + symbol);
+//   request.addEventListener('load', onRequestComplete);
+//   request.send();
+// }
 
-const allCoinRequest = function() {
-  const request = new XMLHttpRequest();
-  request.open("GET", "http://localhost:5000/api/coins/all");
-  request.addEventListener('load', onRequestComplete);
-  request.send();
+// const allCoinRequest = function() {
+//   const request = new XMLHttpRequest();
+//   request.open("GET", "http://localhost:5000/api/coins/all");
+//   request.addEventListener('load', onRequestComplete);
+//   request.send();
+// }
+
+const addCoinButtonClicked = function() {
+  const portfolioList = document.querySelector('#portfolio');
+  const portfolioListView = new PortfolioListView(portfolioList);
+  const coin = document.querySelector('#coin-select').value;
+  console.log(coin);
+  coinRequest(coin);
+  // const coinData = AllCoinsData('http://localhost:5000/api/' + coin);
+  portfolioListView.display(coin);
+  coinData.onLoad = portfolioListView.displayData.bind(portfolioListView);
+
+  
 }
 
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
+
   // coinRequest('btc');
   // allCoinRequest();
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
+  
   allCoinsData.getData();
+
+  document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
 }
 
 window.addEventListener('load', app);
@@ -224,6 +243,57 @@ AllCoinsData.prototype.getData = function() {
 };
 
 module.exports = AllCoinsData;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports) {
+
+const PortfolioListView = function(container) {
+  this.container = container;
+}
+
+PortfolioListView.prototype.populate = function(data) {
+    data.forEach(function(coin) {
+      this.display(coin);
+    }.bind(this))
+};
+
+PortfolioListView.prototype.display = function(symbol) {
+  this.container.innerHTML += `
+  <tr>
+    <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
+    <td>${symbol}</td>
+    <td></td>
+    <td></td>
+    <td></td>
+    <td></td>
+  </tr>
+  `
+};
+
+PortfolioListView.prototype.clear = function() {
+  this.container.innerHTML = '';
+};
+
+module.exports = PortfolioListView;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(1);
+
+const CoinData = function(url) {
+  this.url = url;
+  this.onLoad = null;
+}
+
+CoinData.prototype.getData = function() {
+  let request = new Request(this.url);
+  request.get(this.onLoad);
+};
+
+module.exports = CoinData;
 
 /***/ })
 /******/ ]);
