@@ -1,16 +1,18 @@
 // const Request = require('./services/request.js');
+const AllCoinsData = require('./models/AllCoinsData.js');
+const CoinSelectView = require('./views/CoinSelectView.js');
 
 const display = function(data) {
   let amount = 2;
   document.querySelector('#portfolio').innerHTML += `
-    <tr>
-      <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/eth" alt="" /></td>
-      <td>ETH</td>
-      <td>${Number.parseFloat(data.price).toFixed(2)}</td>
-      <td>${amount}</td>
-      <td>${(data.price * amount).toFixed(2)}</td>
-      <td>${data.change.day}</td>
-    </tr>
+  <tr>
+  <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/eth" alt="" /></td>
+  <td>ETH</td>
+  <td>${Number.parseFloat(data.price).toFixed(2)}</td>
+  <td>${amount}</td>
+  <td>${(data.price * amount).toFixed(2)}</td>
+  <td>${data.change.day}</td>
+  </tr>
   `
   // console.log(data.ticker);
 }
@@ -59,8 +61,13 @@ const allCoinRequest = function() {
 }
 
 const app = function() {
-  coinRequest('btc');
-  allCoinRequest();
+  const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
+  const coinSelect = document.querySelector('#coin-select');
+  const coinSelectView = new CoinSelectView(coinSelect);
+  // coinRequest('btc');
+  // allCoinRequest();
+  allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
+  allCoinsData.getData();
 }
 
 window.addEventListener('load', app);
