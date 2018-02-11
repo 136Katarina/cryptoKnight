@@ -2,9 +2,11 @@
 <html>
 <head>
   <title>Crypto App</title>
+  <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
   <script type="text/javascript" src="bundle.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
+  <!-- <link rel="stylesheet" href="bootswatch.css"> -->
 </head>
 <body>
   <!-- <h1>Crypto App</h1> -->
@@ -15,7 +17,6 @@
       <input class="form-control" value="0" required type="number" id="coin-amount">
       <button class="btn btn-success" type="submit" id="add-coin">Add Coin</button>
     </div>
-    
   </form>
   <table class="table table-dark table-striped" id="portfolio">
     <thead>
@@ -33,5 +34,6 @@
 
     </tbody>
   </table>
+  <div id="portfolio-chart"></div>
 </body>
 </html>

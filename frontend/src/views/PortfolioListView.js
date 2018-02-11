@@ -1,5 +1,6 @@
 const Portfolio = require('../models/Portfolio.js');
 const Request = require('../services/request.js');
+const PieChart = require('../models/PieChart.js');
 
 const PortfolioListView = function(container) {
   this.container = container.childNodes[3];
@@ -16,6 +17,12 @@ PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
   this.save();
   this.addDeleteButton();
+  this.createChart();
+};
+
+PortfolioListView.prototype.createChart = function() {
+  const portfolioChartContainer = document.querySelector('#portfolio-chart');
+  new PieChart(portfolioChartContainer, 'Portfolio Breakdown', this.getChartData());
 };
 
 PortfolioListView.prototype.display = function(symbol, amount) {
@@ -48,6 +55,7 @@ PortfolioListView.prototype.addDeleteButton = function() {
       let toRemove = elements[i].parentElement.parentElement;
       toRemove.parentNode.removeChild(toRemove);
       this.getTotal();
+      this.createChart();
     }.bind(this));
   }
 };
@@ -77,6 +85,18 @@ PortfolioListView.prototype.save = function() {
     port.addCoin(coin);
   }
   request.post(port);
+};
+
+PortfolioListView.prototype.getChartData = function() {
+  let rows = this.container.children;
+  data = new Array();
+  for(row of rows) {
+    data.push({
+      name: row.children[1].innerText,
+      y: parseFloat(row.children[4].innerText)
+    })
+  }
+  return data;
 };
 
 module.exports = PortfolioListView;

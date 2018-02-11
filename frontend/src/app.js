@@ -1,8 +1,10 @@
+require('./services/themes.js');
 const Request = require('./services/request.js');
 const AllCoinsData = require('./models/AllCoinsData.js');
 const CoinData = require('./models/CoinData.js');
 const CoinSelectView = require('./views/CoinSelectView.js');
 const PortfolioListView = require('./views/PortfolioListView.js');
+
 
 const addCoinButtonClicked = function() {
   event.preventDefault();
@@ -29,7 +31,6 @@ const app = function() {
   allCoinsData.getData(); 
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
-
 }
 
 window.addEventListener('load', app);
