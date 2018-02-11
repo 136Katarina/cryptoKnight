@@ -205,16 +205,22 @@ PortfolioListView.prototype.populate = function(data) {
   }.bind(this))
 };
 
+PortfolioListView.prototype.updateTable = function(coin, amount) {
+  this.getTotal();
+  this.save();
+  this.addDeleteButton();
+};
+
 PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
   <tr>
-  <td><img width=50 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
+  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
   <td>${symbol}</td>
   <td></td>
   <td>${amount}</td>
   <td id="coin-value"></td>
   <td></td>
-  <td><button class="delete-row">Delete</button></td>
+  <td><button class="btn btn-danger delete-row">Delete</button></td>
   </tr>
   `
 };
@@ -225,9 +231,7 @@ PortfolioListView.prototype.insertCoinData = function(data) {
   tr[2].innerHTML = data.price;
   tr[4].innerHTML = amount * data.price;
   tr[5].innerHTML = data.change.day;
-  this.getTotal();
-  this.save();
-  this.addDeleteButton();
+  this.updateTable();
 };
 
 PortfolioListView.prototype.addDeleteButton = function() {

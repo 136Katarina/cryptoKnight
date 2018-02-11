@@ -3,24 +3,29 @@
 <head>
   <title>Crypto App</title>
   <script type="text/javascript" src="bundle.js"></script>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 </head>
 <body>
   <!-- <h1>Crypto App</h1> -->
   <h5 id="portfolio-total">£</h5>
-  <form>
-    <select id="coin-select"></select>
-    <input value="0" required type="number" id="coin-amount">
-    <button type="submit" id="add-coin">Add Coin</button>
+  <form class="form-inline">
+    <div class="form-group">
+      <select class="form-control" id="coin-select"></select>
+      <input class="form-control" value="0" required type="number" id="coin-amount">
+      <button class="btn btn-primary" type="submit" id="add-coin">Add Coin</button>
+    </div>
+    
   </form>
-  <table id="portfolio">
+  <table class="table table-dark table-striped" id="portfolio">
     <thead>
       <tr>
-        <th></th>
+        <th>Image</th>
         <th>Coin</th>
         <th>Price</th>
         <th>Amount</th>
         <th>Value</th>
         <th>Change</th>
+        <th></th>
       </tr>
     </thead>
     <tbody>
