@@ -5,37 +5,20 @@ const CoinSelectView = require('./views/CoinSelectView.js');
 const PortfolioListView = require('./views/PortfolioListView.js');
 
 const addCoinButtonClicked = function() {
+  event.preventDefault();
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
   const coin = document.querySelector('#coin-select').value;
   const amount = document.querySelector('#coin-amount').value;
   const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
-  const request = new Request('http://localhost:9000/api/portfolio');
 
-  let body = {
-    name: "Jardine",
-    portfolio: [{
-      coin: coin,
-      amount: amount
-    }]
+  if (amount > 0) {
+    portfolioListView.display(coin, amount);
+    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
+    coinData.getData();
   }
 
-  request.post(body);
-
-  portfolioListView.display(coin, amount);
-  coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
-  coinData.getData();
 }
-
-// const addABunchOfTableStuff = function(){
-//   const portfolioData = new PortfolioData('http://localhost:5000/api/portfolio');
-//   let container = document.querySelector('#portfolio');
-//   const portfolioListView = new PortfolioListView(container);
-
-//   portfolioListView.display(coin, amount);
-//   portfolioData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
-//   portfolioData.getData();
-// }
 
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");

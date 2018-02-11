@@ -6,9 +6,12 @@
 </head>
 <body>
   <!-- <h1>Crypto App</h1> -->
-  <select id="coin-select"></select>
-  <input required type="number" id="coin-amount">
-  <button id="add-coin">Add Coin</button>
+  <h5 id="portfolio-total">£</h5>
+  <form>
+    <select id="coin-select"></select>
+    <input value="0" required type="number" id="coin-amount">
+    <button type="submit" id="add-coin">Add Coin</button>
+  </form>
   <table id="portfolio">
     <thead>
       <tr>
@@ -21,7 +24,7 @@
       </tr>
     </thead>
     <tbody>
-      
+
     </tbody>
   </table>
 </body>
