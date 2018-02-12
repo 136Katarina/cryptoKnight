@@ -17,8 +17,9 @@ PortfolioListView.prototype.populate = function(data) {
 PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
   // this.save();
-  this.addDeleteButton();
   this.createChart();
+  this.addDeleteButton();
+  this.addRowSelect();
 };
 
 PortfolioListView.prototype.createChart = function() {
@@ -28,7 +29,7 @@ PortfolioListView.prototype.createChart = function() {
 
 PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
-  <tr id=${symbol}>
+  <tr class='table-row' id=${symbol}>
   <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /><br><span id="coin">${symbol}<span></td>
   <td></td>
   <td>${amount}</td>
@@ -59,6 +60,21 @@ PortfolioListView.prototype.addDeleteButton = function() {
       this.createChart();
     }.bind(this));
   }
+};
+
+PortfolioListView.prototype.addRowSelect = function() {
+  let elements = document.querySelectorAll(".table-row");
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].addEventListener("click", function() {
+      symbol = elements[i].children[0].lastElementChild.innerText;
+      request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=3&e=CCCAGG`);
+      request.get(this.formatChartData);
+    }.bind(this));
+  }
+};
+
+PortfolioListView.prototype.formatChartData = function(data) {
+  console.log(data);
 };
 
 PortfolioListView.prototype.clear = function() {
@@ -116,6 +132,7 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
   row.children[3].innerHTML = data.price * amount;
   row.children[4].innerHTML = data.change.day;
   this.updateTable();
+
 };
 
 PortfolioListView.prototype.renderProfile = function(data){

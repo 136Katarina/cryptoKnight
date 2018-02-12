@@ -36,6 +36,21 @@ MongoClient.connect('mongodb://localhost:27017', function(err, client) {
     });
   });
 
+  server.put('/api/portfolio/:name', function(req, res){
+    db.collection('portfolios').update(req.body, function(err, result){
+      if(err){
+        console.log(err);
+        res.status(500);
+        res.send();
+      }
+
+      res.status(200);
+      res.json(result.ops[0]);
+
+      console.log('update it yo');
+    })
+  })
+
   server.post('/api/portfolio', function(req, res){
     db.collection('portfolios').save(req.body, function(err, result){
       if(err){
