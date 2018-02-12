@@ -3,7 +3,7 @@ var LineChart = function(container, title, data) {
 
 
     rangeSelector: {
-      selected: 1
+      selected: 2
     },
 
     title: {
@@ -13,7 +13,6 @@ var LineChart = function(container, title, data) {
     series: [{
       name: 'Price (USD)',
       data: data,
-      type: 'spline',
       tooltip: {
         valueDecimals: 2
       }
