@@ -96,7 +96,6 @@ const userSelectChanged = function() {
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
   const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
-  // console.log(portfolioData);
   portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
   portfolioData.getData();
 
@@ -104,8 +103,6 @@ const userSelectChanged = function() {
 
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
-  
-
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
 
@@ -210,6 +207,7 @@ module.exports = AllCoinsData;
 const Portfolio = __webpack_require__(6);
 const Request = __webpack_require__(1);
 const PieChart = __webpack_require__(7);
+const LineChart = __webpack_require__(10);
 const AllCoinsData = __webpack_require__(3);
 
 const PortfolioListView = function(container) {
@@ -283,8 +281,19 @@ PortfolioListView.prototype.addRowSelect = function() {
 };
 
 PortfolioListView.prototype.formatChartData = function(data) {
-  console.log(data);
+  let i = 0;
+  let formattedData = [];
+  for(each of data.Data) {
+    // console.log(each);
+    formattedData.push([each.time, each.close]);
+  }
+  // console.log(formattedData);
+  const performanceChartContainer = document.querySelector('#history-chart');
+  new LineChart(performanceChartContainer, 'Coin Performance', formattedData);
+  // this.createLineChart(formattedData);
 };
+
+
 
 PortfolioListView.prototype.clear = function() {
   this.container.innerHTML = '';
@@ -636,6 +645,34 @@ PortfolioData.prototype.getData = function(){
 
 
 module.exports = PortfolioData;
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+var LineChart = function(container, title, data) {
+  Highcharts.stockChart(container, {
+
+
+    rangeSelector: {
+      selected: 1
+    },
+
+    title: {
+      text: title
+    },
+
+    series: [{
+      name: 'Price (USD)',
+      data: data,
+      tooltip: {
+        valueDecimals: 2
+      }
+    }]
+  });
+}
+
+module.exports = LineChart;
 
 /***/ })
 /******/ ]);

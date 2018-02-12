@@ -1,6 +1,7 @@
 const Portfolio = require('../models/Portfolio.js');
 const Request = require('../services/request.js');
 const PieChart = require('../models/PieChart.js');
+const LineChart = require('../models/LineChart.js');
 const AllCoinsData = require('../models/AllCoinsData.js');
 
 const PortfolioListView = function(container) {
@@ -74,8 +75,19 @@ PortfolioListView.prototype.addRowSelect = function() {
 };
 
 PortfolioListView.prototype.formatChartData = function(data) {
-  console.log(data);
+  let i = 0;
+  let formattedData = [];
+  for(each of data.Data) {
+    // console.log(each);
+    formattedData.push([each.time, each.close]);
+  }
+  // console.log(formattedData);
+  const performanceChartContainer = document.querySelector('#history-chart');
+  new LineChart(performanceChartContainer, 'Coin Performance', formattedData);
+  // this.createLineChart(formattedData);
 };
+
+
 
 PortfolioListView.prototype.clear = function() {
   this.container.innerHTML = '';
