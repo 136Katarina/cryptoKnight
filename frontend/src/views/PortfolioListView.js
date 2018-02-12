@@ -1,6 +1,7 @@
 const Portfolio = require('../models/Portfolio.js');
 const Request = require('../services/request.js');
 const PieChart = require('../models/PieChart.js');
+const AllCoinsData = require('../models/AllCoinsData.js');
 
 const PortfolioListView = function(container) {
   this.container = container.childNodes[3];
@@ -15,7 +16,7 @@ PortfolioListView.prototype.populate = function(data) {
 
 PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
-  this.save();
+  // this.save();
   this.addDeleteButton();
   this.createChart();
 };
@@ -27,9 +28,8 @@ PortfolioListView.prototype.createChart = function() {
 
 PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
-  <tr>
-  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
-  <td>${symbol}</td>
+  <tr id=${symbol}>
+  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /><br><span id="coin">${symbol}<span></td>
   <td></td>
   <td>${amount}</td>
   <td id="coin-value"></td>
@@ -40,8 +40,9 @@ PortfolioListView.prototype.display = function(symbol, amount) {
 };
 
 PortfolioListView.prototype.insertCoinData = function(data) {
+  // console.log("insertCoinData", data);
   let tr = this.container.lastElementChild.children;
-  const amount = tr[3].innerHTML;
+  const amount = tr[2].innerHTML;
   tr[2].innerHTML = data.price;
   tr[4].innerHTML = amount * data.price;
   tr[5].innerHTML = data.change.day;
@@ -79,8 +80,8 @@ PortfolioListView.prototype.save = function() {
   let rows = this.container.children;
   for(row of rows) {
     coin = {
-      coin: row.children[1].innerText,
-      amount: row.children[3].innerText
+      coin: row.children[0].lastElementChild.innerText,
+      amount: row.children[2].innerText
     }
     port.addCoin(coin);
   }
@@ -89,14 +90,42 @@ PortfolioListView.prototype.save = function() {
 
 PortfolioListView.prototype.getChartData = function() {
   let rows = this.container.children;
-  data = new Array();
+  let data = new Array();
   for(row of rows) {
     data.push({
-      name: row.children[1].innerText,
-      y: parseFloat(row.children[4].innerText)
+      name: row.children[0].lastElementChild.innerText,
+      y: parseFloat(row.children[3].innerText)
     })
   }
   return data;
 };
+
+PortfolioListView.prototype.populateTableOnLoad = function() {
+  for(row of this.container.children) {
+    const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[0].lastElementChild.innerText);
+    coinData.onLoad = this.populateRow.bind(this);
+    coinData.getData(row.id);
+  }
+};
+
+PortfolioListView.prototype.populateRow = function(data, symbol) {
+  let row = document.getElementById(symbol);
+  const amount = row.children[2].innerHTML;
+  
+  row.children[1].innerHTML = data.price;
+  row.children[3].innerHTML = data.price * amount;
+  row.children[4].innerHTML = data.change.day;
+  this.updateTable();
+};
+
+PortfolioListView.prototype.renderProfile = function(data){
+  document.querySelector('#portfolio-name').innerText = 'Welcome back, ' + data.name;
+  this.container.innerHTML = '';
+  for (datum of data.portfolio) {
+    this.display(datum.coin, datum.amount);
+  }
+  this.populateTableOnLoad();
+
+}
 
 module.exports = PortfolioListView;

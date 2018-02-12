@@ -10,6 +10,14 @@
 </head>
 <body>
   <!-- <h1>Crypto App</h1> -->
+  <h3 id="portfolio-name"></h1>
+  <form action="" class="form-inline">
+    <select id="user-select" class="form-control">
+      <option disabled selected>-- Please Select A User --</option>
+      <option value="Jardine">Jardine</option>
+      <option value="Eliot">Eliot</option>
+    </select>
+  </form>
   <h5 id="portfolio-total">$0</h5>
   <form class="form-inline">
     <div class="form-group">
@@ -21,11 +29,10 @@
   <table class="table table-dark table-striped" id="portfolio">
     <thead>
       <tr>
-        <th>Image</th>
         <th>Coin</th>
         <th>Price</th>
         <th>Amount</th>
-        <th>Value ($)</th>
+        <th>Value (USD)</th>
         <th>Change</th>
         <th></th>
       </tr>

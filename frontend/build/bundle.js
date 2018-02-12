@@ -73,6 +73,7 @@ const AllCoinsData = __webpack_require__(3);
 const CoinData = __webpack_require__(5);
 const CoinSelectView = __webpack_require__(2);
 const PortfolioListView = __webpack_require__(4);
+const PortfolioData = __webpack_require__(9);
 
 
 const addCoinButtonClicked = function() {
@@ -91,8 +92,20 @@ const addCoinButtonClicked = function() {
 
 }
 
+const userSelectChanged = function() {
+  const portfolioList = document.querySelector('#portfolio');
+  const portfolioListView = new PortfolioListView(portfolioList);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
+  // console.log(portfolioData);
+  portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
+  portfolioData.getData();
+
+}
+
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
+  
+
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
 
@@ -100,6 +113,7 @@ const app = function() {
   allCoinsData.getData(); 
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
+  document.querySelector('#user-select').addEventListener('change', userSelectChanged);
 }
 
 window.addEventListener('load', app);
@@ -114,13 +128,13 @@ const Request = function(url) {
   this.url = url;
 }
 
-Request.prototype.get = function(callback) {
+Request.prototype.get = function(callback, symbol) {
   const request = new XMLHttpRequest();
   request.open('GET', this.url);
   request.addEventListener('load', function() {
     if(this.status != 200) return;
     const responseBody = JSON.parse(this.responseText);
-    callback(responseBody);
+    callback(responseBody, symbol);
   })
   request.send();
 };
@@ -181,9 +195,9 @@ const AllCoinsData = function(url) {
   this.onLoad = null;
 }
 
-AllCoinsData.prototype.getData = function() {
+AllCoinsData.prototype.getData = function(symbol) {
   let request = new Request(this.url);
-  request.get(this.onLoad);
+  request.get(this.onLoad, symbol);
 };
 
 module.exports = AllCoinsData;
@@ -195,6 +209,7 @@ module.exports = AllCoinsData;
 const Portfolio = __webpack_require__(6);
 const Request = __webpack_require__(1);
 const PieChart = __webpack_require__(7);
+const AllCoinsData = __webpack_require__(3);
 
 const PortfolioListView = function(container) {
   this.container = container.childNodes[3];
@@ -209,7 +224,7 @@ PortfolioListView.prototype.populate = function(data) {
 
 PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
-  this.save();
+  // this.save();
   this.addDeleteButton();
   this.createChart();
 };
@@ -221,9 +236,8 @@ PortfolioListView.prototype.createChart = function() {
 
 PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
-  <tr>
-  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
-  <td>${symbol}</td>
+  <tr id=${symbol}>
+  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /><br><span id="coin">${symbol}<span></td>
   <td></td>
   <td>${amount}</td>
   <td id="coin-value"></td>
@@ -234,8 +248,9 @@ PortfolioListView.prototype.display = function(symbol, amount) {
 };
 
 PortfolioListView.prototype.insertCoinData = function(data) {
+  // console.log("insertCoinData", data);
   let tr = this.container.lastElementChild.children;
-  const amount = tr[3].innerHTML;
+  const amount = tr[2].innerHTML;
   tr[2].innerHTML = data.price;
   tr[4].innerHTML = amount * data.price;
   tr[5].innerHTML = data.change.day;
@@ -273,8 +288,8 @@ PortfolioListView.prototype.save = function() {
   let rows = this.container.children;
   for(row of rows) {
     coin = {
-      coin: row.children[1].innerText,
-      amount: row.children[3].innerText
+      coin: row.children[0].lastElementChild.innerText,
+      amount: row.children[2].innerText
     }
     port.addCoin(coin);
   }
@@ -283,15 +298,43 @@ PortfolioListView.prototype.save = function() {
 
 PortfolioListView.prototype.getChartData = function() {
   let rows = this.container.children;
-  data = new Array();
+  let data = new Array();
   for(row of rows) {
     data.push({
-      name: row.children[1].innerText,
-      y: parseFloat(row.children[4].innerText)
+      name: row.children[0].lastElementChild.innerText,
+      y: parseFloat(row.children[3].innerText)
     })
   }
   return data;
 };
+
+PortfolioListView.prototype.populateTableOnLoad = function() {
+  for(row of this.container.children) {
+    const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[0].lastElementChild.innerText);
+    coinData.onLoad = this.populateRow.bind(this);
+    coinData.getData(row.id);
+  }
+};
+
+PortfolioListView.prototype.populateRow = function(data, symbol) {
+  let row = document.getElementById(symbol);
+  const amount = row.children[2].innerHTML;
+  
+  row.children[1].innerHTML = data.price;
+  row.children[3].innerHTML = data.price * amount;
+  row.children[4].innerHTML = data.change.day;
+  this.updateTable();
+};
+
+PortfolioListView.prototype.renderProfile = function(data){
+  document.querySelector('#portfolio-name').innerText = 'Welcome back, ' + data.name;
+  this.container.innerHTML = '';
+  for (datum of data.portfolio) {
+    this.display(datum.coin, datum.amount);
+  }
+  this.populateTableOnLoad();
+
+}
 
 module.exports = PortfolioListView;
 
@@ -343,8 +386,8 @@ var PieChart = function(container, title, data) {
       text: title
     },
     series: [{
-      name: 'Count',
-      data: data
+      name: 'Value (USD)',
+      data: data,
     }]
   })
 }
@@ -555,6 +598,26 @@ Highcharts.theme = {
 
 // Apply the theme
 Highcharts.setOptions(Highcharts.theme);
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(1);
+
+const PortfolioData = function(url){
+  this.url = url;
+  this.onLoad = null;
+}
+
+PortfolioData.prototype.getData = function(){
+  const request = new Request(this.url);
+  request.get(this.onLoad);
+}
+
+
+
+module.exports = PortfolioData;
 
 /***/ })
 /******/ ]);
