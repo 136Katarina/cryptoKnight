@@ -13,6 +13,7 @@ var LineChart = function(container, title, data) {
     series: [{
       name: 'Price (USD)',
       data: data,
+      type: 'spline',
       tooltip: {
         valueDecimals: 2
       }

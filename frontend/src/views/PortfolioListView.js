@@ -69,7 +69,7 @@ PortfolioListView.prototype.addRowSelect = function() {
   for (let i = 0; i < elements.length; i++) {
     elements[i].addEventListener("click", function() {
       symbol = elements[i].children[1].innerText;
-      request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=3&e=CCCAGG`);
+      request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=300&aggregate=3&e=CCCAGG`);
       request.get(this.formatChartData);
     }.bind(this));
   }
@@ -123,7 +123,7 @@ PortfolioListView.prototype.getChartData = function() {
   for(row of rows) {
     data.push({
       name: row.children[1].innerText,
-      y: parseFloat(row.children[3].innerText)
+      y: parseFloat(row.children[4].innerText)
     })
   }
   return data;
@@ -139,7 +139,7 @@ PortfolioListView.prototype.populateTableOnLoad = function() {
 
 PortfolioListView.prototype.populateRow = function(data, symbol) {
   let row = document.getElementById(symbol);
-  const amount = row.children[2].innerHTML;
+  const amount = row.children[3].innerHTML;
   
   row.children[2].innerHTML = data.price;
   row.children[4].innerHTML = data.price * amount;
