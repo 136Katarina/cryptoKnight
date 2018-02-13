@@ -101,7 +101,7 @@ PortfolioListView.prototype.getTotal = function() {
     total += parseFloat(row.children[4].innerText);
   }
   totalString = total.toFixed(2).toLocaleString('en-US');
-  this.total.innerText = `$${totalString}`;
+  this.total.innerHTML = `$${totalString}<br><span class='small'>Portfolio Total</span>`;
 };
 
 PortfolioListView.prototype.save = function() {
@@ -141,12 +141,28 @@ PortfolioListView.prototype.populateTableOnLoad = function() {
 PortfolioListView.prototype.populateRow = function(data, symbol) {
   let row = document.getElementById(symbol);
   const amount = row.children[3].innerHTML;
+  let result = this.isPositive(data.change.day);
+  let changeContainer = null;
+
+  if (result) {
+    changeContainer = `
+      <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-b'></span></div>
+    `
+  } else {
+    changeContainer = `
+      <div class='change red'>${data.change.day}%<span class='ion-arrow-down-b'></span></div>
+      `
+  }
   
   row.children[2].innerHTML = data.price;
   row.children[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
-  row.children[5].innerHTML = data.change.day;
+  row.children[5].innerHTML = changeContainer;
   this.updateTable();
+};
 
+PortfolioListView.prototype.isPositive = function(number) {
+  if(number > 0) return true;
+  return false;
 };
 
 PortfolioListView.prototype.renderProfile = function(data){

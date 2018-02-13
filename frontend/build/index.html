@@ -6,6 +6,7 @@
   <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript" src="bundle.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link rel="stylesheet" href="http://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css">
   <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
@@ -18,7 +19,6 @@
 
     <div class="collapse navbar-collapse" id="navbarsExampleDefault">
       <ul class="navbar-nav mr-auto">
-
         <form class="coin-form block margin-left-15 form-inline">
           <div class="form-group">
             <select class="form-control" id="coin-select"></select>
@@ -29,7 +29,7 @@
       </ul>
       <form class="form-inline my-2 my-lg-0">
         <select id="user-select" class="small-width form-control">
-          <option disabled selected> Please Select A User </option>
+          <option disabled selected>-- Please Select A User --</option>
           <option class="dropdown-item" value="Jardine">Jardine</option>
           <option class="dropdown-item" value="Eliot">Eliot</option>
           <option class="dropdown-item" value="Katarina">Katarina</option>
@@ -40,14 +40,14 @@
   </nav>
 
   <div class="row">
-    <div class="col-lg-6">
+    <div class="col-lg-6 table-col">
       <h5 id="portfolio-total">$0</h5>
       <table class="no-border table table-dark" id="portfolio">
         <thead>
           <tr>
             <th></th>
             <th>Coin</th>
-            <th>Price</th>
+            <th>Price (USD)</th>
             <th>Amount</th>
             <th>Value (USD)</th>
             <th>Change</th>

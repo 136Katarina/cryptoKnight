@@ -2,11 +2,21 @@ body {
   background-color: #2a2a2b;
   color: #ededed;
   font-family: 'Open Sans';
+  overflow: hidden;
+}
+
+.form-control,
+select {
+  border-radius: 0px !important;
+}
+
+.change span {
+  margin: 0 5px;
 }
 
 #news-list {
   position: absolute;
-  right: -19%;
+  right: -19.5%;
   top: 0;
   background: #333;
   width: 20%;
@@ -15,6 +25,14 @@ body {
   height: 100vh;
   border-left: 10px solid #6AE368;
   transition: all .3s;
+}
+
+.green {
+  color: #6AE368;
+}
+
+.red {
+  color: #F25051;
 }
 
 #news-list:hover {
@@ -37,6 +55,10 @@ body {
   background-color: #6AE368 !important;
 }
 
+.btn-success:hover {
+  background-color: #57bc56 !important;
+}
+
 .navbar-dark .navbar-brand {
   color: #63D24A;
 }
@@ -50,15 +72,26 @@ body {
   margin-bottom: 50px;
 }
 
+.table-col {
+  padding-left: 30px;
+}
+
 .delete-row {
   border-radius: 50%;
   background-color: #F25051;
-  padding: .15rem .65rem;
+  padding: .15rem .55rem;
   opacity: 0.8;
+  font-size: 14px;
 }
 
 .right {
   align-self: flex-end !important;
+}
+
+.small {
+  font-size: 20px;
+  position: relative;
+  bottom: 15px;
 }
 
 .navbar-dark {
@@ -75,7 +108,7 @@ body {
 
 #portfolio-total {
   text-align: center;
-  font-size: 44px;
+  font-size: 38px;
   margin: 15px 0;
 }
 
@@ -111,6 +144,7 @@ body {
   background: #2a2a2b;
   border-radius: 5px;
   border-bottom: 2px solid #373739;
+  cursor: pointer;
   /*border-top: 5px solid #2a2a2b;*/
 }
 
