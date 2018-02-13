@@ -42,11 +42,19 @@ const app = function() {
   allCoinsData.getData(); 
 
   const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
-  // const newsView = new NewsView(newsDiv, newsModel);
   newsModel.getData();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
   document.querySelector('#user-select').addEventListener('change', userSelectChanged);
+  document.querySelector('#news-list').addEventListener('mouseover', function() {
+    document.querySelector('#overlay').style.zIndex = '2';
+    document.querySelector('#overlay').style.opacity = '0.3';
+    console.log('sup');
+  })
+  document.querySelector('#news-list').addEventListener('mouseout', function() {
+    document.querySelector('#overlay').style.opacity = '0';
+    document.querySelector('#overlay').style.zIndex = '-1';
+  })
 }
 
 window.addEventListener('load', app);

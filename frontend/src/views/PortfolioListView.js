@@ -143,6 +143,8 @@ PortfolioListView.prototype.getChartData = function() {
   return data;
 };
 
+// Rendering Profiles From Database
+
 PortfolioListView.prototype.populateTableOnLoad = function() {
   for(row of this.container.children) {
     const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[1].innerText);
