@@ -14,7 +14,7 @@ var LineChart = function(container, title, data) {
       name: 'Price (USD)',
       data: data,
       tooltip: {
-        valueDecimals: 2
+        valueDecimals: 4
       }
     }]
   });

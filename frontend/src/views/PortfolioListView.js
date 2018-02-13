@@ -46,7 +46,7 @@ PortfolioListView.prototype.insertCoinData = function(data) {
   let tr = this.container.lastElementChild.children;
   const amount = tr[3].innerHTML;
   tr[2].innerHTML = data.price;
-  tr[4].innerHTML = amount * data.price;
+  tr[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   tr[5].innerHTML = data.change.day;
   this.updateTable();
 };
@@ -78,7 +78,7 @@ PortfolioListView.prototype.formatChartData = function(data, symbol) {
   let i = 0;
   let formattedData = [];
   for(each of data.Data) {
-    console.log(each);
+    // console.log(each);#
     // console.log(each.time, each.close * 1000);
     formattedData.push([(each.time * 1000), each.close]);
   }
@@ -100,7 +100,8 @@ PortfolioListView.prototype.getTotal = function() {
   for(row of rows) {
     total += parseFloat(row.children[4].innerText);
   }
-  this.total.innerText = `$${total.toString()}`;
+  totalString = total.toFixed(2).toLocaleString('en-US');
+  this.total.innerText = `$${totalString}`;
 };
 
 PortfolioListView.prototype.save = function() {
@@ -142,7 +143,7 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
   const amount = row.children[3].innerHTML;
   
   row.children[2].innerHTML = data.price;
-  row.children[4].innerHTML = data.price * amount;
+  row.children[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   row.children[5].innerHTML = data.change.day;
   this.updateTable();
 

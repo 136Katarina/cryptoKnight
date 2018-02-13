@@ -12,6 +12,10 @@ body {
   padding-left: 0 !important;
 }
 
+.charts > * {
+  margin-bottom: 50px;
+}
+
 .delete-row {
   border-radius: 50%;
   background-color: #F25051;
@@ -39,6 +43,11 @@ body {
   text-align: center;
   font-size: 44px;
   margin: 15px 0;
+}
+
+.small-width {
+  width: 250px;
+  align-self: flex-end;
 }
 
 .no-border {
