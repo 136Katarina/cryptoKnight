@@ -2,13 +2,18 @@
   vertical-align: middle;
 }
 
-.table tbody tr {
+.table-row {
   transition: all .2s;
+  margin-bottom: 10px;
+  background: #373739;
+  border-radius: 5px;
+  border-bottom: 5px solid #292929;
+  border-top: 5px solid #292929;
 }
 
 .table tbody tr:hover {
-  background-color: #ddd !important;
-  color: #222;
+  background-color: #515151 !important;
+  color: #ededed;
   /*box-shadow: inset -1px 0px 20px 1px #28a745;*/
 }
 

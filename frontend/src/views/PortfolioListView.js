@@ -68,24 +68,24 @@ PortfolioListView.prototype.addRowSelect = function() {
   let elements = document.querySelectorAll(".table-row");
   for (let i = 0; i < elements.length; i++) {
     elements[i].addEventListener("click", function() {
-      symbol = elements[i].children[1].innerText;
-      request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=1&e=CCCAGG`);
-      request.get(this.formatChartData);
+      let symbol = elements[i].children[1].innerText;
+      let request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=1&e=CCCAGG`);
+      request.get(this.formatChartData, symbol);
     }.bind(this));
   }
 };
 
-PortfolioListView.prototype.formatChartData = function(data) {
+PortfolioListView.prototype.formatChartData = function(data, symbol) {
   let i = 0;
   let formattedData = [];
   for(each of data.Data) {
-    // console.log(each);
+    console.log(each);
     // console.log(each.time, each.close * 1000);
     formattedData.push([(each.time * 1000), each.close]);
   }
   // console.log(formattedData);
   const performanceChartContainer = document.querySelector('#history-chart');
-  new LineChart(performanceChartContainer, 'Coin Performance', formattedData);
+  new LineChart(performanceChartContainer, `${symbol} Performance`, formattedData);
   // this.createLineChart(formattedData);
 };
 
