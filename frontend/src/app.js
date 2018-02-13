@@ -47,11 +47,10 @@ const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
+  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
 
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
-  allCoinsData.getData(); 
-
-  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
+  allCoinsData.getData();   
   newsModel.getData();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);

@@ -116,11 +116,10 @@ const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
+  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
 
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
-  allCoinsData.getData(); 
-
-  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
+  allCoinsData.getData();   
   newsModel.getData();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
@@ -304,23 +303,19 @@ PortfolioListView.prototype.addRowSelect = function() {
     elements[i].addEventListener("click", function() {
       let symbol = elements[i].children[1].innerText;
       let request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=1&e=CCCAGG`);
-      request.get(this.formatChartData, symbol);
+      request.get(this.createLineChart, symbol);
     }.bind(this));
   }
 };
 
-PortfolioListView.prototype.formatChartData = function(data, symbol) {
+PortfolioListView.prototype.createLineChart = function(data, symbol) {
   let i = 0;
   let formattedData = [];
   for(each of data.Data) {
-    // console.log(each);#
-    // console.log(each.time, each.close * 1000);
     formattedData.push([(each.time * 1000), each.close]);
   }
-  // console.log(formattedData);
   const performanceChartContainer = document.querySelector('#history-chart');
   new LineChart(performanceChartContainer, `${symbol} Performance`, formattedData);
-  // this.createLineChart(formattedData);
 };
 
 
@@ -367,12 +362,23 @@ PortfolioListView.prototype.getChartData = function() {
 
 // Rendering Profiles From Database
 
+PortfolioListView.prototype.renderProfile = function(data){
+  this.container.innerHTML = '';
+  for (datum of data.portfolio) {
+    this.display(datum.coin, datum.amount);
+  }
+  this.populateTableOnLoad();
+}
+
 PortfolioListView.prototype.populateTableOnLoad = function() {
   for(row of this.container.children) {
     const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[1].innerText);
     coinData.onLoad = this.populateRow.bind(this);
     coinData.getData(row.id);
   }
+  let symbol = this.container.children[0].children[1].innerText;
+  let request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=1&e=CCCAGG`);
+  request.get(this.createLineChart, symbol);
 };
 
 PortfolioListView.prototype.populateRow = function(data, symbol) {
@@ -397,19 +403,12 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
   this.updateTable();
 };
 
+
+
 PortfolioListView.prototype.isPositive = function(number) {
   if(number > 0) return true;
   return false;
 };
-
-PortfolioListView.prototype.renderProfile = function(data){
-  this.container.innerHTML = '';
-  for (datum of data.portfolio) {
-    this.display(datum.coin, datum.amount);
-  }
-  this.populateTableOnLoad();
-
-}
 
 module.exports = PortfolioListView;
 
