@@ -38,6 +38,7 @@ select {
 #news-list:hover {
   top: 0;
   right: 0;
+  box-shadow: 5px 5px 5px 5000px rgba(0,0,0,0.4);
 }
 
 .article {
@@ -65,7 +66,7 @@ select {
 
 .charts {
   padding-left: 0 !important;
-  padding-right: 30px !important;
+  padding-right: 45px !important;
 }
 
 .charts > * {

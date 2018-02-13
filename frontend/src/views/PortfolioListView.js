@@ -44,10 +44,23 @@ PortfolioListView.prototype.display = function(symbol, amount) {
 PortfolioListView.prototype.insertCoinData = function(data) {
   // console.log("insertCoinData", data);
   let tr = this.container.lastElementChild.children;
+  let result = this.isPositive(data.change.day);
+  let changeContainer = null;
+
+  if (result) {
+    changeContainer = `
+    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-b'></span></div>
+    `
+  } else {
+    changeContainer = `
+    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-b'></span></div>
+    `
+  }
+
   const amount = tr[3].innerHTML;
   tr[2].innerHTML = data.price;
   tr[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
-  tr[5].innerHTML = data.change.day;
+  tr[5].innerHTML = changeContainer;
   this.updateTable();
 };
 
@@ -146,12 +159,12 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
 
   if (result) {
     changeContainer = `
-      <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-b'></span></div>
+    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-b'></span></div>
     `
   } else {
     changeContainer = `
-      <div class='change red'>${data.change.day}%<span class='ion-arrow-down-b'></span></div>
-      `
+    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-b'></span></div>
+    `
   }
   
   row.children[2].innerHTML = data.price;
