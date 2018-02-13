@@ -4,12 +4,46 @@ body {
   font-family: 'Open Sans';
 }
 
+#news-list {
+  position: absolute;
+  right: -19%;
+  top: 0;
+  background: #333;
+  width: 20%;
+  top: 56px;
+  overflow: scroll;
+  height: 100vh;
+  border-left: 10px solid #6AE368;
+  transition: all .3s;
+}
+
+#news-list:hover {
+  top: 0;
+  right: 0;
+}
+
+.article {
+  background: #252525;
+  width: 100% !important;
+  padding: 25px;
+}
+
+.article a {
+  font-size: 22px ;
+  color: #6AE368;
+}
+
+.btn-success {
+  background-color: #6AE368 !important;
+}
+
 .navbar-dark .navbar-brand {
   color: #63D24A;
 }
 
 .charts {
   padding-left: 0 !important;
+  padding-right: 30px !important;
 }
 
 .charts > * {
