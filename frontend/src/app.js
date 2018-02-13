@@ -4,6 +4,8 @@ const AllCoinsData = require('./models/AllCoinsData.js');
 const CoinData = require('./models/CoinData.js');
 const CoinSelectView = require('./views/CoinSelectView.js');
 const PortfolioListView = require('./views/PortfolioListView.js');
+// const NewsView = require('./views/newsView.js');
+const News = require('./models/news.js');
 
 
 const addCoinButtonClicked = function() {
@@ -27,11 +29,17 @@ const app = function() {
   const coinSelect = document.querySelector('#coin-select');
   const coinSelectView = new CoinSelectView(coinSelect);
 
+
+
+  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
+  // const newsView = new NewsView(newsDiv, newsModel);
+
+  newsModel.getData();
+
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
-  allCoinsData.getData(); 
+  allCoinsData.getData();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
 }
 
 window.addEventListener('load', app);
-

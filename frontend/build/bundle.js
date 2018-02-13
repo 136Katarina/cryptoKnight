@@ -60,54 +60,11 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 0);
+/******/ 	return __webpack_require__(__webpack_require__.s = 1);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(8);
-const Request = __webpack_require__(1);
-const AllCoinsData = __webpack_require__(3);
-const CoinData = __webpack_require__(5);
-const CoinSelectView = __webpack_require__(2);
-const PortfolioListView = __webpack_require__(4);
-
-
-const addCoinButtonClicked = function() {
-  event.preventDefault();
-  const portfolioList = document.querySelector('#portfolio');
-  const portfolioListView = new PortfolioListView(portfolioList);
-  const coin = document.querySelector('#coin-select').value;
-  const amount = document.querySelector('#coin-amount').value;
-  const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
-
-  if (amount > 0) {
-    portfolioListView.display(coin, amount);
-    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
-    coinData.getData();
-  }
-
-}
-
-const app = function() {
-  const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
-  const coinSelect = document.querySelector('#coin-select');
-  const coinSelectView = new CoinSelectView(coinSelect);
-
-  allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
-  allCoinsData.getData(); 
-
-  document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
-}
-
-window.addEventListener('load', app);
-
-
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports) {
 
 const Request = function(url) {
@@ -149,210 +106,58 @@ Request.prototype.delete = function() {
 module.exports = Request;
 
 /***/ }),
+/* 1 */
+/***/ (function(module, exports, __webpack_require__) {
+
+__webpack_require__(2);
+const Request = __webpack_require__(0);
+const AllCoinsData = __webpack_require__(3);
+const CoinData = __webpack_require__(4);
+const CoinSelectView = __webpack_require__(5);
+const PortfolioListView = __webpack_require__(6);
+// const NewsView = require('./views/newsView.js');
+const News = __webpack_require__(9);
+
+
+const addCoinButtonClicked = function() {
+  event.preventDefault();
+  const portfolioList = document.querySelector('#portfolio');
+  const portfolioListView = new PortfolioListView(portfolioList);
+  const coin = document.querySelector('#coin-select').value;
+  const amount = document.querySelector('#coin-amount').value;
+  const coinData = new AllCoinsData('http://localhost:5000/api/' + coin);
+
+  if (amount > 0) {
+    portfolioListView.display(coin, amount);
+    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
+    coinData.getData();
+  }
+
+}
+
+const app = function() {
+  const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
+  const coinSelect = document.querySelector('#coin-select');
+  const coinSelectView = new CoinSelectView(coinSelect);
+
+
+
+  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
+  // const newsView = new NewsView(newsDiv, newsModel);
+
+  newsModel.getData();
+
+  allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
+  allCoinsData.getData();
+
+  document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
+}
+
+window.addEventListener('load', app);
+
+
+/***/ }),
 /* 2 */
-/***/ (function(module, exports) {
-
-const CoinSelectView = function(container) {
-  this.container = container;
-}
-
-CoinSelectView.prototype.populate = function(data) {
-  Object.keys(data).forEach(function(key) {
-    this.addCoin(data[key].symbol);
-  }.bind(this));
-};
-
-CoinSelectView.prototype.addCoin = function(coin) {
-  this.container.innerHTML += `
-    <option value="${coin}">${coin}</option>
-  `
-};
-
-module.exports = CoinSelectView;
-
-/***/ }),
-/* 3 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Request = __webpack_require__(1);
-
-const AllCoinsData = function(url) {
-  this.url = url;
-  this.onLoad = null;
-}
-
-AllCoinsData.prototype.getData = function() {
-  let request = new Request(this.url);
-  request.get(this.onLoad);
-};
-
-module.exports = AllCoinsData;
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Portfolio = __webpack_require__(6);
-const Request = __webpack_require__(1);
-const PieChart = __webpack_require__(7);
-
-const PortfolioListView = function(container) {
-  this.container = container.childNodes[3];
-  this.total = document.querySelector('#portfolio-total');
-}
-
-PortfolioListView.prototype.populate = function(data) {
-  data.forEach(function(coin) {
-    this.display(coin);
-  }.bind(this))
-};
-
-PortfolioListView.prototype.updateTable = function(coin, amount) {
-  this.getTotal();
-  this.save();
-  this.addDeleteButton();
-  this.createChart();
-};
-
-PortfolioListView.prototype.createChart = function() {
-  const portfolioChartContainer = document.querySelector('#portfolio-chart');
-  new PieChart(portfolioChartContainer, 'Portfolio Breakdown', this.getChartData());
-};
-
-PortfolioListView.prototype.display = function(symbol, amount) {
-  this.container.innerHTML += `
-  <tr>
-  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
-  <td>${symbol}</td>
-  <td></td>
-  <td>${amount}</td>
-  <td id="coin-value"></td>
-  <td></td>
-  <td><button class="btn btn-danger delete-row">Delete</button></td>
-  </tr>
-  `
-};
-
-PortfolioListView.prototype.insertCoinData = function(data) {
-  let tr = this.container.lastElementChild.children;
-  const amount = tr[3].innerHTML;
-  tr[2].innerHTML = data.price;
-  tr[4].innerHTML = amount * data.price;
-  tr[5].innerHTML = data.change.day;
-  this.updateTable();
-};
-
-PortfolioListView.prototype.addDeleteButton = function() {
-  let elements = document.querySelectorAll(".delete-row");
-  for (let i = 0; i < elements.length; i++) {
-    elements[i].addEventListener("click", function() {
-      let toRemove = elements[i].parentElement.parentElement;
-      toRemove.parentNode.removeChild(toRemove);
-      this.getTotal();
-      this.createChart();
-    }.bind(this));
-  }
-};
-
-PortfolioListView.prototype.clear = function() {
-  this.container.innerHTML = '';
-};
-
-PortfolioListView.prototype.getTotal = function() {
-  let rows = this.container.children;
-  let total = 0;
-  for(row of rows) {
-    total += parseFloat(row.children[4].innerText);
-  }
-  this.total.innerText = `$${total.toString()}`;
-};
-
-PortfolioListView.prototype.save = function() {
-  const request = new Request('http://localhost:9000/api/portfolio');
-  let port = new Portfolio("Jardine");
-  let rows = this.container.children;
-  for(row of rows) {
-    coin = {
-      coin: row.children[1].innerText,
-      amount: row.children[3].innerText
-    }
-    port.addCoin(coin);
-  }
-  request.post(port);
-};
-
-PortfolioListView.prototype.getChartData = function() {
-  let rows = this.container.children;
-  data = new Array();
-  for(row of rows) {
-    data.push({
-      name: row.children[1].innerText,
-      y: parseFloat(row.children[4].innerText)
-    })
-  }
-  return data;
-};
-
-module.exports = PortfolioListView;
-
-/***/ }),
-/* 5 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Request = __webpack_require__(1);
-
-const CoinData = function(url) {
-  this.url = url;
-  this.onLoad = null;
-}
-
-CoinData.prototype.getData = function() {
-  let request = new Request(this.url);
-  // request.get(this.onLoad);
-  request.get(this.onLoad);
-};
-
-module.exports = CoinData;
-
-/***/ }),
-/* 6 */
-/***/ (function(module, exports) {
-
-const Portfolio = function(name) {
-  this.name = name;
-  this.portfolio = [];
-}
-
-Portfolio.prototype.addCoin = function(coinObject) {
-  this.portfolio.push(coinObject);
-};
-
-module.exports = Portfolio;
-
-/***/ }),
-/* 7 */
-/***/ (function(module, exports) {
-
-var PieChart = function(container, title, data) {
-  var chart = new Highcharts.Chart({
-    chart: {
-      type: 'pie',
-      renderTo: container
-    },
-    title: {
-      text: title
-    },
-    series: [{
-      name: 'Count',
-      data: data
-    }]
-  })
-}
-
-module.exports = PieChart;
-
-/***/ }),
-/* 8 */
 /***/ (function(module, exports) {
 
 Highcharts.theme = {
@@ -555,6 +360,313 @@ Highcharts.theme = {
 
 // Apply the theme
 Highcharts.setOptions(Highcharts.theme);
+
+/***/ }),
+/* 3 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(0);
+
+const AllCoinsData = function(url) {
+  this.url = url;
+  this.onLoad = null;
+}
+
+AllCoinsData.prototype.getData = function() {
+  let request = new Request(this.url);
+  request.get(this.onLoad);
+};
+
+module.exports = AllCoinsData;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(0);
+
+const CoinData = function(url) {
+  this.url = url;
+  this.onLoad = null;
+}
+
+CoinData.prototype.getData = function() {
+  let request = new Request(this.url);
+  // request.get(this.onLoad);
+  request.get(this.onLoad);
+};
+
+module.exports = CoinData;
+
+/***/ }),
+/* 5 */
+/***/ (function(module, exports) {
+
+const CoinSelectView = function(container) {
+  this.container = container;
+}
+
+CoinSelectView.prototype.populate = function(data) {
+  Object.keys(data).forEach(function(key) {
+    this.addCoin(data[key].symbol);
+  }.bind(this));
+};
+
+CoinSelectView.prototype.addCoin = function(coin) {
+  this.container.innerHTML += `
+    <option value="${coin}">${coin}</option>
+  `
+};
+
+module.exports = CoinSelectView;
+
+/***/ }),
+/* 6 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Portfolio = __webpack_require__(7);
+const Request = __webpack_require__(0);
+const PieChart = __webpack_require__(8);
+
+const PortfolioListView = function(container) {
+  this.container = container.childNodes[3];
+  this.total = document.querySelector('#portfolio-total');
+}
+
+PortfolioListView.prototype.populate = function(data) {
+  data.forEach(function(coin) {
+    this.display(coin);
+  }.bind(this))
+};
+
+PortfolioListView.prototype.updateTable = function(coin, amount) {
+  this.getTotal();
+  this.save();
+  this.addDeleteButton();
+  this.createChart();
+};
+
+PortfolioListView.prototype.createChart = function() {
+  const portfolioChartContainer = document.querySelector('#portfolio-chart');
+  new PieChart(portfolioChartContainer, 'Portfolio Breakdown', this.getChartData());
+};
+
+PortfolioListView.prototype.display = function(symbol, amount) {
+  this.container.innerHTML += `
+  <tr>
+  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
+  <td>${symbol}</td>
+  <td></td>
+  <td>${amount}</td>
+  <td id="coin-value"></td>
+  <td></td>
+  <td><button class="btn btn-danger delete-row">Delete</button></td>
+  </tr>
+  `
+};
+
+PortfolioListView.prototype.insertCoinData = function(data) {
+  let tr = this.container.lastElementChild.children;
+  const amount = tr[3].innerHTML;
+  tr[2].innerHTML = data.price;
+  tr[4].innerHTML = amount * data.price;
+  tr[5].innerHTML = data.change.day;
+  this.updateTable();
+};
+
+PortfolioListView.prototype.addDeleteButton = function() {
+  let elements = document.querySelectorAll(".delete-row");
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].addEventListener("click", function() {
+      let toRemove = elements[i].parentElement.parentElement;
+      toRemove.parentNode.removeChild(toRemove);
+      this.getTotal();
+      this.createChart();
+    }.bind(this));
+  }
+};
+
+PortfolioListView.prototype.clear = function() {
+  this.container.innerHTML = '';
+};
+
+PortfolioListView.prototype.getTotal = function() {
+  let rows = this.container.children;
+  let total = 0;
+  for(row of rows) {
+    total += parseFloat(row.children[4].innerText);
+  }
+  this.total.innerText = `$${total.toString()}`;
+};
+
+PortfolioListView.prototype.save = function() {
+  const request = new Request('http://localhost:9000/api/portfolio');
+  let port = new Portfolio("Jardine");
+  let rows = this.container.children;
+  for(row of rows) {
+    coin = {
+      coin: row.children[1].innerText,
+      amount: row.children[3].innerText
+    }
+    port.addCoin(coin);
+  }
+  request.post(port);
+};
+
+PortfolioListView.prototype.getChartData = function() {
+  let rows = this.container.children;
+  data = new Array();
+  for(row of rows) {
+    data.push({
+      name: row.children[1].innerText,
+      y: parseFloat(row.children[4].innerText)
+    })
+  }
+  return data;
+};
+
+module.exports = PortfolioListView;
+
+/***/ }),
+/* 7 */
+/***/ (function(module, exports) {
+
+const Portfolio = function(name) {
+  this.name = name;
+  this.portfolio = [];
+}
+
+Portfolio.prototype.addCoin = function(coinObject) {
+  this.portfolio.push(coinObject);
+};
+
+module.exports = Portfolio;
+
+/***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+var PieChart = function(container, title, data) {
+  var chart = new Highcharts.Chart({
+    chart: {
+      type: 'pie',
+      renderTo: container
+    },
+    title: {
+      text: title
+    },
+    series: [{
+      name: 'Count',
+      data: data
+    }]
+  })
+}
+
+module.exports = PieChart;
+
+/***/ }),
+/* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(0);
+
+
+const News = function(url) {
+  this.url = url;
+  // this.onLoad = null;
+}
+
+News.prototype.getData = function(){
+  let request = new Request(this.url);
+  console.log(this.url);
+  request.get(this.render);
+};
+
+
+News.prototype.render = function(news){
+  // const newsDiv = document.querySelector('#news-list');
+
+  var articleTag = document.getElementById('news-list');
+  var headlines = news.articles;
+
+
+  headlines.forEach(function(item){
+
+    var timeDifference = function(){
+
+      var apiDate = item.publishedAt;
+      var apiUnixTime = Date.parse(apiDate)/1000;
+      // console.log(apiUnixTime);
+      var currentUnixTime = Math.round((new Date()).getTime() / 1000);
+      var result = currentUnixTime - apiUnixTime;
+      var minutes = Math.floor(result /60);
+      return minutes;
+    }
+
+    var displayResult = timeDifference();
+
+
+    var tagTitle = document.createElement('h3');
+    tagTitle.innerText = item.title;
+    articleTag.appendChild(tagTitle);
+  
+    var link = document.createElement('a');
+    link.innerText = item.url;
+    link.href = item.url;
+    articleTag.appendChild(link);
+
+    var p = document.createElement('p');
+
+    if (displayResult > 59){
+      var remainder = Math.floor(displayResult % 60);
+      var hours = Math.floor(displayResult / 60);
+      p.innerText = "Published " + hours + " hours " + remainder + " minutes ago";
+    }
+    else if (displayResult > 0){
+      var minutes = displayResult;
+      p.innerText = "Published " + minutes  + " minutes ago";
+    } else {
+      var minutes = displayResult;
+      p.innerText = "Pending publication. This article will be published in " + (minutes * -1) + " minutes"}
+
+
+      articleTag.appendChild(p);
+
+      var text = document.createElement('p');
+      text.innerText = item.description;
+      articleTag.appendChild(text);
+      var image = document.createElement('img');
+      image.src = item.urlToImage;
+      articleTag.appendChild(image);
+      image.width = 220;
+      image.height = 150;
+
+      articleTag.style.fontSize = "1em";
+      articleTag.style.lineHeight = "150%";
+      articleTag.style.width = "50%";
+
+
+
+
+    });
+
+  }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+module.exports = News;
+
 
 /***/ })
 /******/ ]);
