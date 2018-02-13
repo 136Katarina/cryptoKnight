@@ -90,7 +90,6 @@ const addCoinButtonClicked = function() {
     coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
     coinData.getData();
   }
-
 }
 
 const newsOn = function() {
@@ -109,23 +108,36 @@ const userSelectChanged = function() {
   const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
   portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
   portfolioData.getData();
+}
 
+const getNews = function() {
+  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
+  newsModel.getData();
+}
+
+const refreshPortfolio = function() {
+  const portfolioList = document.querySelector('#portfolio');
+  const portfolioListView = new PortfolioListView(portfolioList);
+  portfolioListView.refreshTable();
 }
 
 const app = function() {
-  const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
+  const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelectView = new CoinSelectView(coinSelect);
-  const newsModel = new News('https://newsapi.org/v2/top-headlines?sources=crypto-coins-news&apiKey=e703a1cb92574b5aafa1c3532618f877');
-
+  
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
   allCoinsData.getData();   
-  newsModel.getData();
+  
+  getNews();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
   document.querySelector('#user-select').addEventListener('change', userSelectChanged);
   document.querySelector('#news-list').addEventListener('mouseover', newsOn);
   document.querySelector('#news-list').addEventListener('mouseout', newsOff);
+
+  setInterval(refreshPortfolio, (60000 * 5));
+  setInterval(getNews, (60000 * 5));
 }
 
 window.addEventListener('load', app);
@@ -236,7 +248,7 @@ PortfolioListView.prototype.populate = function(data) {
   }.bind(this))
 };
 
-PortfolioListView.prototype.updateTable = function(coin, amount) {
+PortfolioListView.prototype.updatePortfolio = function(coin, amount) {
   this.getTotal();
   this.createChart();
   this.addDeleteButton();
@@ -282,7 +294,7 @@ PortfolioListView.prototype.insertCoinData = function(data) {
   tr[2].innerHTML = data.price;
   tr[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   tr[5].innerHTML = changeContainer;
-  this.updateTable();
+  this.updatePortfolio();
 };
 
 PortfolioListView.prototype.addDeleteButton = function() {
@@ -367,10 +379,10 @@ PortfolioListView.prototype.renderProfile = function(data){
   for (datum of data.portfolio) {
     this.display(datum.coin, datum.amount);
   }
-  this.populateTableOnLoad();
+  this.refreshTable();
 }
 
-PortfolioListView.prototype.populateTableOnLoad = function() {
+PortfolioListView.prototype.refreshTable = function() {
   for(row of this.container.children) {
     const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[1].innerText);
     coinData.onLoad = this.populateRow.bind(this);
@@ -400,7 +412,7 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
   row.children[2].innerHTML = data.price;
   row.children[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   row.children[5].innerHTML = changeContainer;
-  this.updateTable();
+  this.updatePortfolio();
 };
 
 

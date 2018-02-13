@@ -15,7 +15,7 @@ PortfolioListView.prototype.populate = function(data) {
   }.bind(this))
 };
 
-PortfolioListView.prototype.updateTable = function(coin, amount) {
+PortfolioListView.prototype.updatePortfolio = function(coin, amount) {
   this.getTotal();
   this.createChart();
   this.addDeleteButton();
@@ -61,7 +61,7 @@ PortfolioListView.prototype.insertCoinData = function(data) {
   tr[2].innerHTML = data.price;
   tr[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   tr[5].innerHTML = changeContainer;
-  this.updateTable();
+  this.updatePortfolio();
 };
 
 PortfolioListView.prototype.addDeleteButton = function() {
@@ -146,10 +146,10 @@ PortfolioListView.prototype.renderProfile = function(data){
   for (datum of data.portfolio) {
     this.display(datum.coin, datum.amount);
   }
-  this.populateTableOnLoad();
+  this.refreshTable();
 }
 
-PortfolioListView.prototype.populateTableOnLoad = function() {
+PortfolioListView.prototype.refreshTable = function() {
   for(row of this.container.children) {
     const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[1].innerText);
     coinData.onLoad = this.populateRow.bind(this);
@@ -179,7 +179,7 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
   row.children[2].innerHTML = data.price;
   row.children[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   row.children[5].innerHTML = changeContainer;
-  this.updateTable();
+  this.updatePortfolio();
 };
 
 
