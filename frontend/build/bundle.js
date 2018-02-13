@@ -93,6 +93,16 @@ const addCoinButtonClicked = function() {
 
 }
 
+const newsOn = function() {
+  document.querySelector('#overlay').style.zIndex = '2';
+  document.querySelector('#overlay').style.opacity = '0.3';
+}
+
+const newsOff = function() {
+  document.querySelector('#overlay').style.zIndex = '-1';
+  document.querySelector('#overlay').style.opacity = '0';
+}
+
 const userSelectChanged = function() {
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
@@ -115,15 +125,8 @@ const app = function() {
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
   document.querySelector('#user-select').addEventListener('change', userSelectChanged);
-  document.querySelector('#news-list').addEventListener('mouseover', function() {
-    document.querySelector('#overlay').style.zIndex = '2';
-    document.querySelector('#overlay').style.opacity = '0.3';
-    console.log('sup');
-  })
-  document.querySelector('#news-list').addEventListener('mouseout', function() {
-    document.querySelector('#overlay').style.opacity = '0';
-    document.querySelector('#overlay').style.zIndex = '-1';
-  })
+  document.querySelector('#news-list').addEventListener('mouseover', newsOn);
+  document.querySelector('#news-list').addEventListener('mouseout', newsOff);
 }
 
 window.addEventListener('load', app);
