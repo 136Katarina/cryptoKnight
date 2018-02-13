@@ -4,6 +4,12 @@ var PieChart = function(container, title, data) {
       type: 'pie',
       renderTo: container
     },
+    plotOptions: {
+      pie: {
+        borderWidth: 0.5,
+        borderColor: null
+      }
+    },
     title: {
       text: title
     },
