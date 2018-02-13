@@ -2,39 +2,58 @@
 <html>
 <head>
   <title>Crypto App</title>
-  <script type="text/javascript" src="http://code.highcharts.com/highcharts.js"></script>
+  <script src="https://code.highcharts.com/stock/highstock.js"></script>
+  <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript" src="bundle.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
   <link rel="stylesheet" href="style.css">
   <!-- <link rel="stylesheet" href="bootswatch.css"> -->
 </head>
 <body>
+  <button id="update"></button>
   <!-- <h1>Crypto App</h1> -->
-  <h5 id="portfolio-total">$0</h5>
-  <form class="form-inline">
-    <div class="form-group">
-      <select class="form-control" id="coin-select"></select>
-      <input class="form-control" value="0" required type="number" id="coin-amount">
-      <button class="btn btn-success" type="submit" id="add-coin">Add Coin</button>
-    </div>
-  </form>
-  <table class="table table-dark table-striped" id="portfolio">
-    <thead>
-      <tr>
-        <th>Image</th>
-        <th>Coin</th>
-        <th>Price</th>
-        <th>Amount</th>
-        <th>Value ($)</th>
-        <th>Change</th>
-        <th></th>
-      </tr>
-    </thead>
-    <tbody>
+  <h3 id="portfolio-name"></h1>
+    <form action="" class="form-inline">
+      <select id="user-select" class="form-control">
+        <option disabled selected>-- Please Select A User --</option>
+        <option value="Jardine">Jardine</option>
+        <option value="Eliot">Eliot</option>
+      </select>
+    </form>
+    <h5 id="portfolio-total">$0</h5>
+    <form class="form-inline">
+      <div class="form-group">
+        <select class="form-control" id="coin-select"></select>
+        <input class="form-control" value="0" required type="number" id="coin-amount">
+        <button class="btn btn-success" type="submit" id="add-coin">Add Coin</button>
+      </div>
+    </form>
+    <table class="table table-dark table-striped" id="portfolio">
+      <thead>
+        <tr>
+          <th>Image</th>
+          <th>Coin</th>
+          <th>Price</th>
+          <th>Amount</th>
+          <th>Value (USD)</th>
+          <th>Change</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
 
+<<<<<<< HEAD
     </tbody>
   </table>
   <div id="portfolio-chart"></div>
   <div id="news-list"></div>
 </body>
 </html>
+=======
+      </tbody>
+    </table>
+    <div id="portfolio-chart"></div>
+    <div id="history-chart"></div>
+  </body>
+  </html>
+>>>>>>> cc07a509738ab9c4e904d1a0cea12fa857f32dd3

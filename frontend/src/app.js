@@ -4,7 +4,7 @@ const AllCoinsData = require('./models/AllCoinsData.js');
 const CoinData = require('./models/CoinData.js');
 const CoinSelectView = require('./views/CoinSelectView.js');
 const PortfolioListView = require('./views/PortfolioListView.js');
-// const NewsView = require('./views/newsView.js');
+const PortfolioData = require('./models/PortfolioData.js');
 const News = require('./models/news.js');
 
 
@@ -24,6 +24,15 @@ const addCoinButtonClicked = function() {
 
 }
 
+const userSelectChanged = function() {
+  const portfolioList = document.querySelector('#portfolio');
+  const portfolioListView = new PortfolioListView(portfolioList);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
+  portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
+  portfolioData.getData();
+
+}
+
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
@@ -40,6 +49,7 @@ const app = function() {
   allCoinsData.getData();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
+  document.querySelector('#user-select').addEventListener('change', userSelectChanged);
 }
 
 window.addEventListener('load', app);

@@ -2,13 +2,13 @@ const Request = function(url) {
   this.url = url;
 }
 
-Request.prototype.get = function(callback) {
+Request.prototype.get = function(callback, symbol) {
   const request = new XMLHttpRequest();
   request.open('GET', this.url);
   request.addEventListener('load', function() {
     if(this.status != 200) return;
     const responseBody = JSON.parse(this.responseText);
-    callback(responseBody);
+    callback(responseBody, symbol);
   })
   request.send();
 };
@@ -33,5 +33,6 @@ Request.prototype.delete = function() {
   })
   request.send();
 };
+
 
 module.exports = Request;

@@ -10,4 +10,6 @@ PortfolioData.prototype.getData = function(){
   request.get(this.onLoad);
 }
 
+
+
 module.exports = PortfolioData;

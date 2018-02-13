@@ -71,13 +71,13 @@ const Request = function(url) {
   this.url = url;
 }
 
-Request.prototype.get = function(callback) {
+Request.prototype.get = function(callback, symbol) {
   const request = new XMLHttpRequest();
   request.open('GET', this.url);
   request.addEventListener('load', function() {
     if(this.status != 200) return;
     const responseBody = JSON.parse(this.responseText);
-    callback(responseBody);
+    callback(responseBody, symbol);
   })
   request.send();
 };
@@ -103,6 +103,7 @@ Request.prototype.delete = function() {
   request.send();
 };
 
+
 module.exports = Request;
 
 /***/ }),
@@ -115,7 +116,7 @@ const AllCoinsData = __webpack_require__(3);
 const CoinData = __webpack_require__(4);
 const CoinSelectView = __webpack_require__(5);
 const PortfolioListView = __webpack_require__(6);
-// const NewsView = require('./views/newsView.js');
+const PortfolioData = __webpack_require__(11);
 const News = __webpack_require__(9);
 
 
@@ -135,6 +136,15 @@ const addCoinButtonClicked = function() {
 
 }
 
+const userSelectChanged = function() {
+  const portfolioList = document.querySelector('#portfolio');
+  const portfolioListView = new PortfolioListView(portfolioList);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
+  portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
+  portfolioData.getData();
+
+}
+
 const app = function() {
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelect = document.querySelector('#coin-select');
@@ -151,6 +161,7 @@ const app = function() {
   allCoinsData.getData();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
+  document.querySelector('#user-select').addEventListener('change', userSelectChanged);
 }
 
 window.addEventListener('load', app);
@@ -372,9 +383,9 @@ const AllCoinsData = function(url) {
   this.onLoad = null;
 }
 
-AllCoinsData.prototype.getData = function() {
+AllCoinsData.prototype.getData = function(symbol) {
   let request = new Request(this.url);
-  request.get(this.onLoad);
+  request.get(this.onLoad, symbol);
 };
 
 module.exports = AllCoinsData;
@@ -427,6 +438,8 @@ module.exports = CoinSelectView;
 const Portfolio = __webpack_require__(7);
 const Request = __webpack_require__(0);
 const PieChart = __webpack_require__(8);
+const LineChart = __webpack_require__(10);
+const AllCoinsData = __webpack_require__(3);
 
 const PortfolioListView = function(container) {
   this.container = container.childNodes[3];
@@ -441,9 +454,10 @@ PortfolioListView.prototype.populate = function(data) {
 
 PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
-  this.save();
-  this.addDeleteButton();
+  // this.save();
   this.createChart();
+  this.addDeleteButton();
+  this.addRowSelect();
 };
 
 PortfolioListView.prototype.createChart = function() {
@@ -453,7 +467,7 @@ PortfolioListView.prototype.createChart = function() {
 
 PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
-  <tr>
+  <tr class='table-row' id=${symbol}>
   <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
   <td>${symbol}</td>
   <td></td>
@@ -466,6 +480,7 @@ PortfolioListView.prototype.display = function(symbol, amount) {
 };
 
 PortfolioListView.prototype.insertCoinData = function(data) {
+  // console.log("insertCoinData", data);
   let tr = this.container.lastElementChild.children;
   const amount = tr[3].innerHTML;
   tr[2].innerHTML = data.price;
@@ -486,6 +501,33 @@ PortfolioListView.prototype.addDeleteButton = function() {
   }
 };
 
+PortfolioListView.prototype.addRowSelect = function() {
+  let elements = document.querySelectorAll(".table-row");
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].addEventListener("click", function() {
+      symbol = elements[i].children[1].innerText;
+      request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=1&e=CCCAGG`);
+      request.get(this.formatChartData);
+    }.bind(this));
+  }
+};
+
+PortfolioListView.prototype.formatChartData = function(data) {
+  let i = 0;
+  let formattedData = [];
+  for(each of data.Data) {
+    // console.log(each);
+    // console.log(each.time, each.close * 1000);
+    formattedData.push([(each.time * 1000), each.close]);
+  }
+  // console.log(formattedData);
+  const performanceChartContainer = document.querySelector('#history-chart');
+  new LineChart(performanceChartContainer, 'Coin Performance', formattedData);
+  // this.createLineChart(formattedData);
+};
+
+
+
 PortfolioListView.prototype.clear = function() {
   this.container.innerHTML = '';
 };
@@ -505,8 +547,8 @@ PortfolioListView.prototype.save = function() {
   let rows = this.container.children;
   for(row of rows) {
     coin = {
-      coin: row.children[1].innerText,
-      amount: row.children[3].innerText
+      coin: row.children[0].lastElementChild.innerText,
+      amount: row.children[2].innerText
     }
     port.addCoin(coin);
   }
@@ -515,7 +557,7 @@ PortfolioListView.prototype.save = function() {
 
 PortfolioListView.prototype.getChartData = function() {
   let rows = this.container.children;
-  data = new Array();
+  let data = new Array();
   for(row of rows) {
     data.push({
       name: row.children[1].innerText,
@@ -524,6 +566,35 @@ PortfolioListView.prototype.getChartData = function() {
   }
   return data;
 };
+
+PortfolioListView.prototype.populateTableOnLoad = function() {
+  for(row of this.container.children) {
+    const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[1].innerText);
+    coinData.onLoad = this.populateRow.bind(this);
+    coinData.getData(row.id);
+  }
+};
+
+PortfolioListView.prototype.populateRow = function(data, symbol) {
+  let row = document.getElementById(symbol);
+  const amount = row.children[3].innerHTML;
+  
+  row.children[2].innerHTML = data.price;
+  row.children[4].innerHTML = data.price * amount;
+  row.children[5].innerHTML = data.change.day;
+  this.updateTable();
+
+};
+
+PortfolioListView.prototype.renderProfile = function(data){
+  document.querySelector('#portfolio-name').innerText = 'Welcome back, ' + data.name;
+  this.container.innerHTML = '';
+  for (datum of data.portfolio) {
+    this.display(datum.coin, datum.amount);
+  }
+  this.populateTableOnLoad();
+
+}
 
 module.exports = PortfolioListView;
 
@@ -556,8 +627,8 @@ var PieChart = function(container, title, data) {
       text: title
     },
     series: [{
-      name: 'Count',
-      data: data
+      name: 'Value (USD)',
+      data: data,
     }]
   })
 }
@@ -667,6 +738,54 @@ News.prototype.render = function(news){
 
 module.exports = News;
 
+
+/***/ }),
+/* 10 */
+/***/ (function(module, exports) {
+
+var LineChart = function(container, title, data) {
+  Highcharts.stockChart(container, {
+
+
+    rangeSelector: {
+      selected: 2
+    },
+
+    title: {
+      text: title
+    },
+
+    series: [{
+      name: 'Price (USD)',
+      data: data,
+      tooltip: {
+        valueDecimals: 2
+      }
+    }]
+  });
+}
+
+module.exports = LineChart;
+
+/***/ }),
+/* 11 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(0);
+
+const PortfolioData = function(url){
+  this.url = url;
+  this.onLoad = null;
+}
+
+PortfolioData.prototype.getData = function(){
+  const request = new Request(this.url);
+  request.get(this.onLoad);
+}
+
+
+
+module.exports = PortfolioData;
 
 /***/ })
 /******/ ]);

@@ -5,9 +5,9 @@ const AllCoinsData = function(url) {
   this.onLoad = null;
 }
 
-AllCoinsData.prototype.getData = function() {
+AllCoinsData.prototype.getData = function(symbol) {
   let request = new Request(this.url);
-  request.get(this.onLoad);
+  request.get(this.onLoad, symbol);
 };
 
 module.exports = AllCoinsData;

@@ -1,6 +1,8 @@
 const Portfolio = require('../models/Portfolio.js');
 const Request = require('../services/request.js');
 const PieChart = require('../models/PieChart.js');
+const LineChart = require('../models/LineChart.js');
+const AllCoinsData = require('../models/AllCoinsData.js');
 
 const PortfolioListView = function(container) {
   this.container = container.childNodes[3];
@@ -15,9 +17,10 @@ PortfolioListView.prototype.populate = function(data) {
 
 PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
-  this.save();
-  this.addDeleteButton();
+  // this.save();
   this.createChart();
+  this.addDeleteButton();
+  this.addRowSelect();
 };
 
 PortfolioListView.prototype.createChart = function() {
@@ -27,7 +30,7 @@ PortfolioListView.prototype.createChart = function() {
 
 PortfolioListView.prototype.display = function(symbol, amount) {
   this.container.innerHTML += `
-  <tr>
+  <tr class='table-row' id=${symbol}>
   <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
   <td>${symbol}</td>
   <td></td>
@@ -40,6 +43,7 @@ PortfolioListView.prototype.display = function(symbol, amount) {
 };
 
 PortfolioListView.prototype.insertCoinData = function(data) {
+  // console.log("insertCoinData", data);
   let tr = this.container.lastElementChild.children;
   const amount = tr[3].innerHTML;
   tr[2].innerHTML = data.price;
@@ -60,6 +64,33 @@ PortfolioListView.prototype.addDeleteButton = function() {
   }
 };
 
+PortfolioListView.prototype.addRowSelect = function() {
+  let elements = document.querySelectorAll(".table-row");
+  for (let i = 0; i < elements.length; i++) {
+    elements[i].addEventListener("click", function() {
+      symbol = elements[i].children[1].innerText;
+      request = new Request(`https://min-api.cryptocompare.com/data/histoday?fsym=${symbol}&tsym=USD&limit=600&aggregate=1&e=CCCAGG`);
+      request.get(this.formatChartData);
+    }.bind(this));
+  }
+};
+
+PortfolioListView.prototype.formatChartData = function(data) {
+  let i = 0;
+  let formattedData = [];
+  for(each of data.Data) {
+    // console.log(each);
+    // console.log(each.time, each.close * 1000);
+    formattedData.push([(each.time * 1000), each.close]);
+  }
+  // console.log(formattedData);
+  const performanceChartContainer = document.querySelector('#history-chart');
+  new LineChart(performanceChartContainer, 'Coin Performance', formattedData);
+  // this.createLineChart(formattedData);
+};
+
+
+
 PortfolioListView.prototype.clear = function() {
   this.container.innerHTML = '';
 };
@@ -79,8 +110,8 @@ PortfolioListView.prototype.save = function() {
   let rows = this.container.children;
   for(row of rows) {
     coin = {
-      coin: row.children[1].innerText,
-      amount: row.children[3].innerText
+      coin: row.children[0].lastElementChild.innerText,
+      amount: row.children[2].innerText
     }
     port.addCoin(coin);
   }
@@ -89,7 +120,7 @@ PortfolioListView.prototype.save = function() {
 
 PortfolioListView.prototype.getChartData = function() {
   let rows = this.container.children;
-  data = new Array();
+  let data = new Array();
   for(row of rows) {
     data.push({
       name: row.children[1].innerText,
@@ -98,5 +129,34 @@ PortfolioListView.prototype.getChartData = function() {
   }
   return data;
 };
+
+PortfolioListView.prototype.populateTableOnLoad = function() {
+  for(row of this.container.children) {
+    const coinData = new AllCoinsData('http://localhost:5000/api/' + row.children[1].innerText);
+    coinData.onLoad = this.populateRow.bind(this);
+    coinData.getData(row.id);
+  }
+};
+
+PortfolioListView.prototype.populateRow = function(data, symbol) {
+  let row = document.getElementById(symbol);
+  const amount = row.children[3].innerHTML;
+  
+  row.children[2].innerHTML = data.price;
+  row.children[4].innerHTML = data.price * amount;
+  row.children[5].innerHTML = data.change.day;
+  this.updateTable();
+
+};
+
+PortfolioListView.prototype.renderProfile = function(data){
+  document.querySelector('#portfolio-name').innerText = 'Welcome back, ' + data.name;
+  this.container.innerHTML = '';
+  for (datum of data.portfolio) {
+    this.display(datum.coin, datum.amount);
+  }
+  this.populateTableOnLoad();
+
+}
 
 module.exports = PortfolioListView;

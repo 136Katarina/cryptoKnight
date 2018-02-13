@@ -8,8 +8,8 @@ var PieChart = function(container, title, data) {
       text: title
     },
     series: [{
-      name: 'Count',
-      data: data
+      name: 'Value (USD)',
+      data: data,
     }]
   })
 }
