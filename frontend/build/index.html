@@ -6,45 +6,78 @@
   <script src="https://code.highcharts.com/stock/modules/exporting.js"></script>
   <script type="text/javascript" src="bundle.js"></script>
   <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
+  <link href="https://fonts.googleapis.com/css?family=Open+Sans:300,400,700" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
   <!-- <link rel="stylesheet" href="bootswatch.css"> -->
 </head>
 <body>
   <!-- <h1>Crypto App</h1> -->
-  <h3 id="portfolio-name"></h1>
-    <form action="" class="form-inline">
-      <select id="user-select" class="form-control">
-        <option disabled selected>-- Please Select A User --</option>
-        <option value="Jardine">Jardine</option>
-        <option value="Eliot">Eliot</option>
-      </select>
-    </form>
-    
-    <form class="form-inline">
-      <div class="form-group">
-        <select class="form-control" id="coin-select"></select>
-        <input class="form-control" value="0" required type="number" id="coin-amount">
-        <button class="btn btn-success" type="submit" id="add-coin">Add Coin</button>
-      </div>
-    </form>
-    <h5 id="portfolio-total">$0</h5>
-    <table class="table table-dark" id="portfolio">
-      <thead>
-        <tr>
-          <th>Image</th>
-          <th>Coin</th>
-          <th>Price</th>
-          <th>Amount</th>
-          <th>Value (USD)</th>
-          <th>Change</th>
-          <th></th>
-        </tr>
-      </thead>
-      <tbody>
+  <nav class="navbar navbar-expand-md navbar-dark bg-dark">
+    <a class="navbar-brand" href="#">CryptoKnight</a>
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
 
-      </tbody>
-    </table>
-    <div id="portfolio-chart"></div>
-    <div id="history-chart"></div>
-  </body>
-  </html>
+    <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+      <ul class="navbar-nav">
+
+        <form class="coin-form block margin-left-15 form-inline">
+          <div class="form-group">
+            <select class="form-control" id="coin-select"></select>
+            <input class="form-control" value="0" required type="number" id="coin-amount">
+            <button class="btn btn-success" type="submit" id="add-coin">Add Coin</button>
+          </div>
+        </form>
+
+      </ul>
+
+      <form class="form-inline my-2 my-lg-0 float-right">
+          <!-- <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search"> -->
+          <!-- <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button> -->
+
+          <select id="user-select" class="nav-item form-control mr-sm-2">
+            <option disabled selected>-- Please Select A User --</option>
+            <option class="dropdown-item" value="Jardine">Jardine</option>
+            <option class="dropdown-item" value="Eliot">Eliot</option>
+            <option class="dropdown-item" value="Katarina">Katarina</option>
+            <option class="dropdown-item" value="Brian">Brian</option>
+          </select>
+        </form>
+
+    </div>
+  </nav>
+
+  <div class="container-fluid">
+    <div class="row">
+      <div class="col-sm-6">
+
+        <h5 id="portfolio-total">$0</h5>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-6">
+        <table class="no-border table table-dark" id="portfolio">
+          <thead>
+            <tr>
+              <th></th>
+              <th>Coin</th>
+              <th>Price</th>
+              <th>Amount</th>
+              <th>Value (USD)</th>
+              <th>Change</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody></tbody>
+        </table>
+      </div>
+
+      <div class="col-sm-6 charts">
+        <div id="portfolio-chart"></div>
+        <div id="history-chart"></div>
+      </div>
+    </div>
+  </div>
+
+</body>
+</html>

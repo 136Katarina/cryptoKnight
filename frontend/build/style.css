@@ -1,15 +1,79 @@
+body {
+  background-color: #2a2a2b;
+  color: #ededed;
+  font-family: 'Open Sans';
+}
+
+.navbar-dark .navbar-brand {
+  color: #63D24A;
+}
+
+.charts {
+  padding-left: 0 !important;
+}
+
+.delete-row {
+  border-radius: 50%;
+  background-color: #F25051;
+  padding: .15rem .65rem;
+  opacity: 0.8;
+}
+
+.right {
+  align-self: flex-end !important;
+}
+
+.navbar-dark {
+  background-color: #2a2a2b !important; 
+}
+
+.coin-form .form-group > * {
+  margin-right: 10px;
+}
+
+.margin-left-15 {
+  margin-left: 15px;
+}
+
+#portfolio-total {
+  text-align: center;
+  font-size: 44px;
+  margin: 15px 0;
+}
+
+.no-border {
+  border: none !important;
+  border-spacing: 0px;
+}
+
 .table td {
   vertical-align: middle;
 }
 
-.table-row {
+.block {
+  display: block;
+}
+
+.table thead {
+  background-color: #222;
+}
+
+.table-dark thead th {
+  border-color: #222;
+}
+
+.table tbody tr {
   transition: all .2s;
   margin-bottom: 10px;
-  background: #373739;
+  background: #2a2a2b;
   border-radius: 5px;
-  border-bottom: 5px solid #292929;
-  border-top: 5px solid #292929;
+  border-bottom: 2px solid #373739;
+  /*border-top: 5px solid #2a2a2b;*/
 }
+
+/*.table tbody tr:nth-child(even) {
+  background-color: #464646;
+}*/
 
 .table tbody tr:hover {
   background-color: #515151 !important;

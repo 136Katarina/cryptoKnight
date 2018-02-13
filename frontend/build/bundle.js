@@ -223,7 +223,6 @@ PortfolioListView.prototype.populate = function(data) {
 
 PortfolioListView.prototype.updateTable = function(coin, amount) {
   this.getTotal();
-  // this.save();
   this.createChart();
   this.addDeleteButton();
   this.addRowSelect();
@@ -243,7 +242,7 @@ PortfolioListView.prototype.display = function(symbol, amount) {
   <td>${amount}</td>
   <td id="coin-value"></td>
   <td></td>
-  <td><button class="btn btn-danger delete-row">Delete</button></td>
+  <td><button class="btn btn-danger delete-row">x</button></td>
   </tr>
   `
 };
@@ -356,7 +355,6 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
 };
 
 PortfolioListView.prototype.renderProfile = function(data){
-  document.querySelector('#portfolio-name').innerText = 'Welcome back, ' + data.name;
   this.container.innerHTML = '';
   for (datum of data.portfolio) {
     this.display(datum.coin, datum.amount);
@@ -435,7 +433,7 @@ Highcharts.theme = {
          linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
          stops: [
             [0, '#2a2a2b'],
-            [1, '#3e3e40']
+            [1, '#2a2a2b']
          ]
       },
       style: {
