@@ -9,6 +9,10 @@ body {
   margin: 0 5px;
 }
 
+.margin-right {
+  margin-right: 5px;
+}
+
 #news-list {
   z-index: 3;
   position: absolute;
@@ -52,6 +56,7 @@ body {
 .article {
   width: 100% !important;
   padding: 25px;
+  margin-bottom: 25px;
 }
 
 .article a {

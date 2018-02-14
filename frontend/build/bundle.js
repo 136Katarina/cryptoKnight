@@ -87,7 +87,7 @@ const addCoinButtonClicked = function() {
 
   if (amount > 0) {
     portfolioListView.display(coin, amount);
-    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
+    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView, coin);
     coinData.getData();
   }
 }
@@ -136,7 +136,7 @@ const app = function() {
   document.querySelector('#news-list').addEventListener('mouseover', newsOn);
   document.querySelector('#news-list').addEventListener('mouseout', newsOff);
 
-  setInterval(refreshPortfolio, (60000 * 5));
+  setInterval(refreshPortfolio, (60000 * 5)); 
   setInterval(getNews, (60000 * 5));
 }
 
@@ -274,20 +274,22 @@ PortfolioListView.prototype.display = function(symbol, amount) {
   `
 };
 
-PortfolioListView.prototype.insertCoinData = function(data) {
-  // console.log("insertCoinData", data);
+PortfolioListView.prototype.insertCoinData = function(symbol, data) {
+  console.log("insertCoinData", symbol);
   let tr = this.container.lastElementChild.children;
   let result = this.isPositive(data.change.day);
   let changeContainer = null;
 
   if (result) {
     changeContainer = `
-    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-b'></span></div>
+    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-c'></span></div>
     `
+    tr[1].innerHTML = "<span class='margin-right ion-arrow-up-c green'></span>" + symbol;
   } else {
     changeContainer = `
-    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-b'></span></div>
+    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-c'></span></div>
     `
+    tr[1].innerHTML = "<span class='margin-right ion-arrow-down-c red'></span>" + symbol;
   }
 
   const amount = tr[3].innerHTML;
@@ -401,12 +403,14 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
 
   if (result) {
     changeContainer = `
-    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-b'></span></div>
+    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-c'></span></div>
     `
+    row.children[1].innerHTML = "<span class='margin-right ion-arrow-up-c green'></span>" + symbol;
   } else {
     changeContainer = `
-    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-b'></span></div>
+    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-c'></span></div>
     `
+    row.children[1].innerHTML = "<span class='margin-right ion-arrow-down-c red'></span>" + symbol;
   }
   
   row.children[2].innerHTML = data.price;

@@ -18,7 +18,7 @@ const addCoinButtonClicked = function() {
 
   if (amount > 0) {
     portfolioListView.display(coin, amount);
-    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView);
+    coinData.onLoad = portfolioListView.insertCoinData.bind(portfolioListView, coin);
     coinData.getData();
   }
 }
@@ -67,7 +67,7 @@ const app = function() {
   document.querySelector('#news-list').addEventListener('mouseover', newsOn);
   document.querySelector('#news-list').addEventListener('mouseout', newsOff);
 
-  setInterval(refreshPortfolio, (60000 * 5));
+  setInterval(refreshPortfolio, (60000 * 5)); 
   setInterval(getNews, (60000 * 5));
 }
 
