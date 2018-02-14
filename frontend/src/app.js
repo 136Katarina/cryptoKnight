@@ -36,7 +36,7 @@ const newsOff = function() {
 const userSelectChanged = function() {
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
-  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.innerText);
   portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
   portfolioData.getData();
 }

@@ -36,20 +36,21 @@ MongoClient.connect('mongodb://localhost:27017', function(err, client) {
     });
   });
 
-  // server.put('/api/portfolio/:name', function(req, res){
-  //   db.collection('portfolios').update(req.body, function(err, result){
-  //     if(err){
-  //       console.log(err);
-  //       res.status(500);
-  //       res.send();
-  //     }
-
-  //     res.status(200);
-  //     res.json(result.ops[0]);
-
-  //     console.log('update it yo');
-  //   })
-  // })
+  server.put('/api/portfolio/:id', function(req, res){
+    console.log(req.params.id);
+    db.collection('portfolios').findOneAndUpdate({_id: ObjectID(req.params.id)}, req.body, function(err, result){
+      if(err){
+        console.log(err);
+        res.status(500);
+        res.send();
+      }
+      console.log(req.body);
+      console.log(result);
+      res.status(200);
+      res.json(result);
+      // console.log('update it yo');
+    })
+  })
 
   server.post('/api/portfolio', function(req, res){
     db.collection('portfolios').save(req.body, function(err, result){

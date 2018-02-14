@@ -105,7 +105,7 @@ const newsOff = function() {
 const userSelectChanged = function() {
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
-  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.innerText);
   portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
   portfolioData.getData();
 }
@@ -184,6 +184,16 @@ Request.prototype.delete = function() {
   request.send();
 };
 
+Request.prototype.put = function(body) {
+  const request = new XMLHttpRequest();
+  request.open('PUT', this.url);
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.addEventListener('load', function() {
+    if(this.status != 200) return;
+  })
+  request.send(JSON.stringify(body));
+};
+
 
 module.exports = Request;
 
@@ -251,8 +261,28 @@ PortfolioListView.prototype.populate = function(data) {
 PortfolioListView.prototype.updatePortfolio = function(coin, amount) {
   this.getTotal();
   this.createChart();
-  this.addDeleteButton();
+  this.updateDB();
   this.addRowSelect();
+};
+
+PortfolioListView.prototype.updateDB = function() {
+  let userSelect = document.querySelector('#user-select');
+  const id = userSelect.value;
+  const name = userSelect.innerText;
+  const request = new Request('http://localhost:9000/api/portfolio/' + id);
+
+  let port = new Portfolio(name);
+  let rows = this.container.children;
+  for(row of rows) {
+    coin = {
+      coin: row.children[1].innerText,
+      amount: row.children[3].innerText
+    }
+    // port.id = id;
+    port.addCoin(coin);
+  }
+  // console.log(port);
+  request.put(port);
 };
 
 PortfolioListView.prototype.createChart = function() {
@@ -272,6 +302,7 @@ PortfolioListView.prototype.display = function(symbol, amount) {
   <td><button class="btn btn-danger delete-row">x</button></td>
   </tr>
   `
+  this.addDeleteButton();
 };
 
 PortfolioListView.prototype.insertCoinData = function(symbol, data) {
@@ -301,12 +332,15 @@ PortfolioListView.prototype.insertCoinData = function(symbol, data) {
 
 PortfolioListView.prototype.addDeleteButton = function() {
   let elements = document.querySelectorAll(".delete-row");
+  var toRemove;
   for (let i = 0; i < elements.length; i++) {
-    elements[i].addEventListener("click", function() {
-      let toRemove = elements[i].parentElement.parentElement;
+    elements[i].addEventListener("click", function(e) {
+      // console.log(i);
+      toRemove = e.target.parentElement.parentElement;
       toRemove.parentNode.removeChild(toRemove);
       this.getTotal();
       this.createChart();
+      this.updateDB();
     }.bind(this));
   }
 };
@@ -348,19 +382,19 @@ PortfolioListView.prototype.getTotal = function() {
   this.total.innerHTML = `$${totalString}<br><span class='small'>Portfolio Total</span>`;
 };
 
-PortfolioListView.prototype.save = function() {
-  const request = new Request('http://localhost:9000/api/portfolio');
-  let port = new Portfolio("Jardine");
-  let rows = this.container.children;
-  for(row of rows) {
-    coin = {
-      coin: row.children[0].lastElementChild.innerText,
-      amount: row.children[2].innerText
-    }
-    port.addCoin(coin);
-  }
-  request.post(port);
-};
+// PortfolioListView.prototype.save = function() {
+//   const request = new Request('http://localhost:9000/api/portfolio');
+//   let port = new Portfolio("Jardine");
+//   let rows = this.container.children;
+//   for(row of rows) {
+//     coin = {
+//       coin: row.children[1].lastElementChild.innerText,
+//       amount: row.children[3].innerText
+//     }
+//     port.addCoin(coin);
+//   }
+//   request.post(port);
+// };
 
 PortfolioListView.prototype.getChartData = function() {
   let rows = this.container.children;
@@ -377,8 +411,9 @@ PortfolioListView.prototype.getChartData = function() {
 // Rendering Profiles From Database
 
 PortfolioListView.prototype.renderProfile = function(data){
+  // let data = data[0].portfolio;  
   this.container.innerHTML = '';
-  for (datum of data.portfolio) {
+  for (datum of data[0].portfolio) {
     this.display(datum.coin, datum.amount);
   }
   this.refreshTable();
