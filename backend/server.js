@@ -22,9 +22,9 @@ MongoClient.connect('mongodb://localhost:27017', function(err, client) {
     })
   });
 
-  server.get('/api/portfolio/:name', function(req, res){
-    // db.collection('portfolios').findOne({_id: ObjectID(req.params.id)}, function(err, result){
-    db.collection('portfolios').findOne({name: req.params.name}, function(err, result){
+  server.get('/api/portfolio/:id', function(req, res){
+    db.collection('portfolios').findOne({_id: ObjectID(req.params.id)}, function(err, result){
+    // db.collection('portfolios').findOne({name: req.params.name}, function(err, result){
 
       if (err) {
         res.status(500);
@@ -37,15 +37,15 @@ MongoClient.connect('mongodb://localhost:27017', function(err, client) {
   });
 
   server.put('/api/portfolio/:id', function(req, res){
-    console.log(req.params.id);
+    // console.log(req.params.id);
     db.collection('portfolios').findOneAndUpdate({_id: ObjectID(req.params.id)}, req.body, function(err, result){
       if(err){
         console.log(err);
         res.status(500);
         res.send();
       }
-      console.log(req.body);
-      console.log(result);
+      // console.log(req.body);
+      // console.log(result);
       res.status(200);
       res.json(result);
       // console.log('update it yo');
