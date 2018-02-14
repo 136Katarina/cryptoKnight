@@ -7,7 +7,7 @@ var PieChart = function(container, title, data) {
     plotOptions: {
       pie: {
         borderWidth: 0.5,
-        borderColor: null
+        // borderColor: null
       }
     },
     title: {
