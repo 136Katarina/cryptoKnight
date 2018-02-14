@@ -25,7 +25,7 @@ const addCoinButtonClicked = function() {
 
 const newsOn = function() {
   document.querySelector('#overlay').style.zIndex = '2';
-  document.querySelector('#overlay').style.opacity = '0.3';
+  document.querySelector('#overlay').style.opacity = '0.4';
 }
 
 const newsOff = function() {

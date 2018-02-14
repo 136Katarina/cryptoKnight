@@ -16,6 +16,7 @@ News.prototype.render = function(news){
   // const newsDiv = document.querySelector('#news-list');
 
   var articleTag = document.getElementById('news-list');
+  articleTag.innerHTML = '';
   
 
   var headlines = news.articles;

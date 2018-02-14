@@ -94,7 +94,7 @@ const addCoinButtonClicked = function() {
 
 const newsOn = function() {
   document.querySelector('#overlay').style.zIndex = '2';
-  document.querySelector('#overlay').style.opacity = '0.3';
+  document.querySelector('#overlay').style.opacity = '0.4';
 }
 
 const newsOff = function() {
@@ -761,6 +761,7 @@ News.prototype.render = function(news){
   // const newsDiv = document.querySelector('#news-list');
 
   var articleTag = document.getElementById('news-list');
+  articleTag.innerHTML = '';
   
 
   var headlines = news.articles;
