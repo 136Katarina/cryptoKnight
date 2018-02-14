@@ -108,7 +108,7 @@ body {
 }
 
 .navbar-dark {
-  background-color: #2a2a2b !important; 
+  background-color: #2a2a2b !important;
 }
 
 .coin-form .form-group > * {
@@ -162,15 +162,31 @@ body {
 }
 
 /*.table tbody tr:nth-child(even) {
-  background-color: #464646;
-  }*/
+background-color: #464646;
+}*/
 
-  .table tbody tr:hover {
-    background-color: #515151 !important;
-    color: #ededed;
-    /*box-shadow: inset -1px 0px 20px 1px #28a745;*/
-  }
+.table tbody tr:hover {
+  background-color: #515151 !important;
+  color: #ededed;
+  /*box-shadow: inset -1px 0px 20px 1px #28a745;*/
+}
 
-  * {
-    font-weight: 300 !important;
-  }
+* {
+  font-weight: 300 !important;
+}
+
+#hideme {
+  width: 700px;
+  height: 250px;
+  position:absolute; /*it can be fixed too*/
+  left:0; right:0;
+  top:0; bottom:0;
+  margin:auto;
+  max-width:100%;
+  max-height:100%;
+  overflow:auto;
+}
+
+#hideme, h1, h2 {
+  text-align: center;
+}

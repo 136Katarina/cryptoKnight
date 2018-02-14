@@ -50,6 +50,8 @@ PortfolioListView.prototype.createChart = function() {
 PortfolioListView.prototype.display = function(symbol, amount) {
   var div = document.querySelector(".row");
   div.style.visibility = "visible";
+  var hide = document.querySelector('#hideme');
+  hide.style.display = "none";
   this.container.innerHTML += `
   <tr class='table-row' id=${symbol}>
   <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
