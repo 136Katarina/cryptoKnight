@@ -48,6 +48,8 @@ PortfolioListView.prototype.createChart = function() {
 };
 
 PortfolioListView.prototype.display = function(symbol, amount) {
+  var div = document.querySelector(".row");
+  div.style.visibility = "visible";
   this.container.innerHTML += `
   <tr class='table-row' id=${symbol}>
   <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
@@ -135,8 +137,8 @@ PortfolioListView.prototype.getTotal = function() {
   for(row of rows) {
     total += parseFloat(row.children[4].innerText);
   }
-  totalString = total.toFixed(2).toLocaleString('en-US');
-  this.total.innerHTML = `$${totalString}<br><span class='small'>Portfolio Total</span>`;
+  totalString = total.toLocaleString('en-US', { style: 'currency', currency: 'USD' });
+  this.total.innerHTML = `${totalString}<br><span class='small'>Portfolio Total</span>`;
 };
 
 // PortfolioListView.prototype.save = function() {
@@ -204,7 +206,7 @@ PortfolioListView.prototype.populateRow = function(data, symbol) {
     `
     row.children[1].innerHTML = "<span class='margin-right ion-arrow-down-c red'></span>" + symbol;
   }
-  
+
   row.children[2].innerHTML = data.price;
   row.children[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
   row.children[5].innerHTML = changeContainer;

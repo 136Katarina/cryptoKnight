@@ -55,13 +55,15 @@ const refreshPortfolio = function() {
 }
 
 const app = function() {
+  var div = document.querySelector(".row");
+  div.style.visibility = "hidden";
   const coinSelect = document.querySelector('#coin-select');
   const allCoinsData = new AllCoinsData("http://localhost:5000/api/coins/all");
   const coinSelectView = new CoinSelectView(coinSelect);
-  
+
   allCoinsData.onLoad = coinSelectView.populate.bind(coinSelectView);
-  allCoinsData.getData();   
-  
+  allCoinsData.getData();
+
   getNews();
 
   document.querySelector('#add-coin').addEventListener('click', addCoinButtonClicked);
@@ -69,9 +71,8 @@ const app = function() {
   document.querySelector('#news-list').addEventListener('mouseover', newsOn);
   document.querySelector('#news-list').addEventListener('mouseout', newsOff);
 
-  setInterval(refreshPortfolio, (60000 * 5)); 
+  setInterval(refreshPortfolio, (60000 * 5));
   setInterval(getNews, (60000 * 5));
 }
 
 window.addEventListener('load', app);
-
