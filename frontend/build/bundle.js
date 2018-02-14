@@ -60,91 +60,20 @@
 /******/ 	__webpack_require__.p = "";
 /******/
 /******/ 	// Load entry module and return exports
-/******/ 	return __webpack_require__(__webpack_require__.s = 2);
+/******/ 	return __webpack_require__(__webpack_require__.s = 0);
 /******/ })
 /************************************************************************/
 /******/ ([
 /* 0 */
-/***/ (function(module, exports) {
-
-const Request = function(url) {
-  this.url = url;
-}
-
-Request.prototype.get = function(callback, symbol) {
-  const request = new XMLHttpRequest();
-  request.open('GET', this.url);
-  request.addEventListener('load', function() {
-    if(this.status != 200) return;
-    const responseBody = JSON.parse(this.responseText);
-    callback(responseBody, symbol);
-  })
-  request.send();
-};
-
-// Request.prototype.post = function(callback, body) {
-Request.prototype.post = function(body) {
-  const request = new XMLHttpRequest();
-  request.open('POST', this.url);
-  request.setRequestHeader('Content-Type', 'application/json');
-  request.addEventListener('load', function() {
-    if(this.status != 201) return;
-    const responseBody = JSON.parse(this.responseText);
-  })
-  request.send(JSON.stringify(body));
-};
-
-Request.prototype.delete = function() {
-  const request = new XMLHttpRequest();
-  request.open('DELETE', this.url);
-  request.addEventListener('load', function() {
-    if(this.status != 204) return;
-  })
-  request.send();
-};
-
-Request.prototype.put = function(body) {
-  const request = new XMLHttpRequest();
-  request.open('PUT', this.url);
-  request.setRequestHeader('Content-Type', 'application/json');
-  request.addEventListener('load', function() {
-    if(this.status != 200) return;
-  })
-  request.send(JSON.stringify(body));
-};
-
-
-module.exports = Request;
-
-/***/ }),
-/* 1 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Request = __webpack_require__(0);
-
-const AllCoinsData = function(url) {
-  this.url = url;
-  this.onLoad = null;
-}
-
-AllCoinsData.prototype.getData = function(symbol) {
-  let request = new Request(this.url);
-  request.get(this.onLoad, symbol);
-};
-
-module.exports = AllCoinsData;
-
-/***/ }),
-/* 2 */
-/***/ (function(module, exports, __webpack_require__) {
-
-__webpack_require__(3);
-const Request = __webpack_require__(0);
-const AllCoinsData = __webpack_require__(1);
-const CoinData = __webpack_require__(4);
-const CoinSelectView = __webpack_require__(5);
-const PortfolioListView = __webpack_require__(6);
-const PortfolioData = __webpack_require__(10);
+__webpack_require__(8);
+const Request = __webpack_require__(1);
+const AllCoinsData = __webpack_require__(3);
+const CoinData = __webpack_require__(5);
+const CoinSelectView = __webpack_require__(2);
+const PortfolioListView = __webpack_require__(4);
+const PortfolioData = __webpack_require__(9);
 const News = __webpack_require__(11);
 
 
@@ -219,231 +148,60 @@ window.addEventListener('load', app);
 
 
 /***/ }),
-/* 3 */
+/* 1 */
 /***/ (function(module, exports) {
 
-Highcharts.theme = {
-   colors: ['#6AE368', '#f25051', '#ffe56a', '#61e3cc', '#e32f80',
-      '#b06aff', '#f7903c', '#a6e54b', '#e5774b', '#4be577'],
-   chart: {
-      backgroundColor: {
-         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
-         stops: [
-            [0, '#2a2a2b'],
-            [1, '#2a2a2b']
-         ]
-      },
-      style: {
-         fontFamily: '\'Roboto\', sans-serif'
-      },
-      plotBorderColor: '#606063'
-   },
-   title: {
-      style: {
-         color: '#E0E0E3',
-         fontSize: '16px'
-      }
-   },
-   subtitle: {
-      style: {
-         color: '#E0E0E3',
-         textTransform: 'uppercase'
-      }
-   },
-   xAxis: {
-      gridLineColor: '#707073',
-      labels: {
-         style: {
-            color: '#E0E0E3'
-         }
-      },
-      lineColor: '#707073',
-      minorGridLineColor: '#505053',
-      tickColor: '#707073',
-      title: {
-         style: {
-            color: '#A0A0A3'
-
-         }
-      }
-   },
-   yAxis: {
-      gridLineColor: '#707073',
-      labels: {
-         style: {
-            color: '#E0E0E3'
-         }
-      },
-      lineColor: '#707073',
-      minorGridLineColor: '#505053',
-      tickColor: '#707073',
-      tickWidth: 1,
-      title: {
-         style: {
-            color: '#A0A0A3'
-         }
-      }
-   },
-   tooltip: {
-      backgroundColor: 'rgba(0, 0, 0, 0.85)',
-      style: {
-         color: '#F0F0F0'
-      }
-   },
-   plotOptions: {
-      series: {
-         dataLabels: {
-            color: '#B0B0B3'
-         },
-         marker: {
-            lineColor: '#333'
-         }
-      },
-      boxplot: {
-         fillColor: '#505053'
-      },
-      candlestick: {
-         lineColor: 'white'
-      },
-      errorbar: {
-         color: 'white'
-      }
-   },
-   legend: {
-      itemStyle: {
-         color: '#E0E0E3'
-      },
-      itemHoverStyle: {
-         color: '#FFF'
-      },
-      itemHiddenStyle: {
-         color: '#606063'
-      }
-   },
-   credits: {
-      style: {
-         color: '#666'
-      }
-   },
-   labels: {
-      style: {
-         color: '#707073'
-      }
-   },
-
-   drilldown: {
-      activeAxisLabelStyle: {
-         color: '#F0F0F3'
-      },
-      activeDataLabelStyle: {
-         color: '#F0F0F3'
-      }
-   },
-
-   navigation: {
-      buttonOptions: {
-         symbolStroke: '#DDDDDD',
-         theme: {
-            fill: '#505053'
-         }
-      }
-   },
-
-   // scroll charts
-   rangeSelector: {
-      buttonTheme: {
-         fill: '#505053',
-         stroke: '#000000',
-         style: {
-            color: '#CCC'
-         },
-         states: {
-            hover: {
-               fill: '#707073',
-               stroke: '#000000',
-               style: {
-                  color: 'white'
-               }
-            },
-            select: {
-               fill: '#000003',
-               stroke: '#000000',
-               style: {
-                  color: 'white'
-               }
-            }
-         }
-      },
-      inputBoxBorderColor: '#505053',
-      inputStyle: {
-         backgroundColor: '#333',
-         color: 'silver'
-      },
-      labelStyle: {
-         color: 'silver'
-      }
-   },
-
-   navigator: {
-      handles: {
-         backgroundColor: '#666',
-         borderColor: '#AAA'
-      },
-      outlineColor: '#CCC',
-      maskFill: 'rgba(255,255,255,0.1)',
-      series: {
-         color: '#7798BF',
-         lineColor: '#A6C7ED'
-      },
-      xAxis: {
-         gridLineColor: '#505053'
-      }
-   },
-
-   scrollbar: {
-      barBackgroundColor: '#808083',
-      barBorderColor: '#808083',
-      buttonArrowColor: '#CCC',
-      buttonBackgroundColor: '#606063',
-      buttonBorderColor: '#606063',
-      rifleColor: '#FFF',
-      trackBackgroundColor: '#404043',
-      trackBorderColor: '#404043'
-   },
-
-   // special colors for some of the
-   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
-   background2: '#505053',
-   dataLabelsColor: '#B0B0B3',
-   textColor: '#C0C0C0',
-   contrastTextColor: '#F0F0F3',
-   maskColor: 'rgba(255,255,255,0.3)'
-};
-
-// Apply the theme
-Highcharts.setOptions(Highcharts.theme);
-
-/***/ }),
-/* 4 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Request = __webpack_require__(0);
-
-const CoinData = function(url) {
+const Request = function(url) {
   this.url = url;
-  this.onLoad = null;
 }
 
-CoinData.prototype.getData = function() {
-  let request = new Request(this.url);
-  // request.get(this.onLoad);
-  request.get(this.onLoad);
+Request.prototype.get = function(callback, symbol) {
+  const request = new XMLHttpRequest();
+  request.open('GET', this.url);
+  request.addEventListener('load', function() {
+    if(this.status != 200) return;
+    const responseBody = JSON.parse(this.responseText);
+    callback(responseBody, symbol);
+  })
+  request.send();
 };
 
-module.exports = CoinData;
+// Request.prototype.post = function(callback, body) {
+Request.prototype.post = function(body) {
+  const request = new XMLHttpRequest();
+  request.open('POST', this.url);
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.addEventListener('load', function() {
+    if(this.status != 201) return;
+    const responseBody = JSON.parse(this.responseText);
+  })
+  request.send(JSON.stringify(body));
+};
+
+Request.prototype.delete = function() {
+  const request = new XMLHttpRequest();
+  request.open('DELETE', this.url);
+  request.addEventListener('load', function() {
+    if(this.status != 204) return;
+  })
+  request.send();
+};
+
+Request.prototype.put = function(body) {
+  const request = new XMLHttpRequest();
+  request.open('PUT', this.url);
+  request.setRequestHeader('Content-Type', 'application/json');
+  request.addEventListener('load', function() {
+    if(this.status != 200) return;
+  })
+  request.send(JSON.stringify(body));
+};
+
+
+module.exports = Request;
 
 /***/ }),
-/* 5 */
+/* 2 */
 /***/ (function(module, exports) {
 
 const CoinSelectView = function(container) {
@@ -465,14 +223,32 @@ CoinSelectView.prototype.addCoin = function(coin) {
 module.exports = CoinSelectView;
 
 /***/ }),
-/* 6 */
+/* 3 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Portfolio = __webpack_require__(7);
-const Request = __webpack_require__(0);
-const PieChart = __webpack_require__(8);
-const LineChart = __webpack_require__(9);
-const AllCoinsData = __webpack_require__(1);
+const Request = __webpack_require__(1);
+
+const AllCoinsData = function(url) {
+  this.url = url;
+  this.onLoad = null;
+}
+
+AllCoinsData.prototype.getData = function(symbol) {
+  let request = new Request(this.url);
+  request.get(this.onLoad, symbol);
+};
+
+module.exports = AllCoinsData;
+
+/***/ }),
+/* 4 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Portfolio = __webpack_require__(6);
+const Request = __webpack_require__(1);
+const PieChart = __webpack_require__(7);
+const LineChart = __webpack_require__(10);
+const AllCoinsData = __webpack_require__(3);
 
 const PortfolioListView = function(container) {
   this.container = container.childNodes[3];
@@ -694,7 +470,26 @@ module.exports = PortfolioListView;
 
 
 /***/ }),
-/* 7 */
+/* 5 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(1);
+
+const CoinData = function(url) {
+  this.url = url;
+  this.onLoad = null;
+}
+
+CoinData.prototype.getData = function() {
+  let request = new Request(this.url);
+  // request.get(this.onLoad);
+  request.get(this.onLoad);
+};
+
+module.exports = CoinData;
+
+/***/ }),
+/* 6 */
 /***/ (function(module, exports) {
 
 const Portfolio = function(name) {
@@ -709,7 +504,7 @@ Portfolio.prototype.addCoin = function(coinObject) {
 module.exports = Portfolio;
 
 /***/ }),
-/* 8 */
+/* 7 */
 /***/ (function(module, exports) {
 
 var PieChart = function(container, title, data) {
@@ -737,7 +532,232 @@ var PieChart = function(container, title, data) {
 module.exports = PieChart;
 
 /***/ }),
+/* 8 */
+/***/ (function(module, exports) {
+
+Highcharts.theme = {
+   colors: ['#6AE368', '#f25051', '#ffe56a', '#61e3cc', '#e32f80',
+      '#b06aff', '#f7903c', '#a6e54b', '#e5774b', '#4be577'],
+   chart: {
+      backgroundColor: {
+         linearGradient: { x1: 0, y1: 0, x2: 1, y2: 1 },
+         stops: [
+            [0, '#2a2a2b'],
+            [1, '#2a2a2b']
+         ]
+      },
+      style: {
+         fontFamily: '\'Roboto\', sans-serif'
+      },
+      plotBorderColor: '#606063'
+   },
+   title: {
+      style: {
+         color: '#E0E0E3',
+         fontSize: '16px'
+      }
+   },
+   subtitle: {
+      style: {
+         color: '#E0E0E3',
+         textTransform: 'uppercase'
+      }
+   },
+   xAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      title: {
+         style: {
+            color: '#A0A0A3'
+
+         }
+      }
+   },
+   yAxis: {
+      gridLineColor: '#707073',
+      labels: {
+         style: {
+            color: '#E0E0E3'
+         }
+      },
+      lineColor: '#707073',
+      minorGridLineColor: '#505053',
+      tickColor: '#707073',
+      tickWidth: 1,
+      title: {
+         style: {
+            color: '#A0A0A3'
+         }
+      }
+   },
+   tooltip: {
+      backgroundColor: 'rgba(0, 0, 0, 0.85)',
+      style: {
+         color: '#F0F0F0'
+      }
+   },
+   plotOptions: {
+      series: {
+         dataLabels: {
+            color: '#B0B0B3'
+         },
+         marker: {
+            lineColor: '#333'
+         }
+      },
+      boxplot: {
+         fillColor: '#505053'
+      },
+      candlestick: {
+         lineColor: 'white'
+      },
+      errorbar: {
+         color: 'white'
+      }
+   },
+   legend: {
+      itemStyle: {
+         color: '#E0E0E3'
+      },
+      itemHoverStyle: {
+         color: '#FFF'
+      },
+      itemHiddenStyle: {
+         color: '#606063'
+      }
+   },
+   credits: {
+      style: {
+         color: '#666'
+      }
+   },
+   labels: {
+      style: {
+         color: '#707073'
+      }
+   },
+
+   drilldown: {
+      activeAxisLabelStyle: {
+         color: '#F0F0F3'
+      },
+      activeDataLabelStyle: {
+         color: '#F0F0F3'
+      }
+   },
+
+   navigation: {
+      buttonOptions: {
+         symbolStroke: '#DDDDDD',
+         theme: {
+            fill: '#505053'
+         }
+      }
+   },
+
+   // scroll charts
+   rangeSelector: {
+      buttonTheme: {
+         fill: '#505053',
+         stroke: '#000000',
+         style: {
+            color: '#CCC'
+         },
+         states: {
+            hover: {
+               fill: '#707073',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            },
+            select: {
+               fill: '#000003',
+               stroke: '#000000',
+               style: {
+                  color: 'white'
+               }
+            }
+         }
+      },
+      inputBoxBorderColor: '#505053',
+      inputStyle: {
+         backgroundColor: '#333',
+         color: 'silver'
+      },
+      labelStyle: {
+         color: 'silver'
+      }
+   },
+
+   navigator: {
+      handles: {
+         backgroundColor: '#666',
+         borderColor: '#AAA'
+      },
+      outlineColor: '#CCC',
+      maskFill: 'rgba(255,255,255,0.1)',
+      series: {
+         color: '#7798BF',
+         lineColor: '#A6C7ED'
+      },
+      xAxis: {
+         gridLineColor: '#505053'
+      }
+   },
+
+   scrollbar: {
+      barBackgroundColor: '#808083',
+      barBorderColor: '#808083',
+      buttonArrowColor: '#CCC',
+      buttonBackgroundColor: '#606063',
+      buttonBorderColor: '#606063',
+      rifleColor: '#FFF',
+      trackBackgroundColor: '#404043',
+      trackBorderColor: '#404043'
+   },
+
+   // special colors for some of the
+   legendBackgroundColor: 'rgba(0, 0, 0, 0.5)',
+   background2: '#505053',
+   dataLabelsColor: '#B0B0B3',
+   textColor: '#C0C0C0',
+   contrastTextColor: '#F0F0F3',
+   maskColor: 'rgba(255,255,255,0.3)'
+};
+
+// Apply the theme
+Highcharts.setOptions(Highcharts.theme);
+
+/***/ }),
 /* 9 */
+/***/ (function(module, exports, __webpack_require__) {
+
+const Request = __webpack_require__(1);
+
+const PortfolioData = function(url){
+  this.url = url;
+  this.onLoad = null;
+}
+
+PortfolioData.prototype.getData = function(){
+  const request = new Request(this.url);
+  request.get(this.onLoad);
+}
+
+
+
+module.exports = PortfolioData;
+
+/***/ }),
+/* 10 */
 /***/ (function(module, exports) {
 
 var LineChart = function(container, title, data) {
@@ -765,30 +785,10 @@ var LineChart = function(container, title, data) {
 module.exports = LineChart;
 
 /***/ }),
-/* 10 */
-/***/ (function(module, exports, __webpack_require__) {
-
-const Request = __webpack_require__(0);
-
-const PortfolioData = function(url){
-  this.url = url;
-  this.onLoad = null;
-}
-
-PortfolioData.prototype.getData = function(){
-  const request = new Request(this.url);
-  request.get(this.onLoad);
-}
-
-
-
-module.exports = PortfolioData;
-
-/***/ }),
 /* 11 */
 /***/ (function(module, exports, __webpack_require__) {
 
-const Request = __webpack_require__(0);
+const Request = __webpack_require__(1);
 
 const News = function(url) {
   this.url = url;
