@@ -47,47 +47,70 @@ PortfolioListView.prototype.createChart = function() {
   new PieChart(portfolioChartContainer, 'Portfolio Breakdown', this.getChartData());
 };
 
+PortfolioListView.prototype.hasMatch = function(symbol) {
+  let rows = this.container.children;
+  for(row of rows) {
+    if (row.children[1].innerText === symbol) return row;
+  }
+  return false;
+};
+
+PortfolioListView.prototype.updateAmount = function(row, amount) {
+  let amountTD = row.children[3];
+  let parsedAmount = parseFloat(amount);
+  let currentAmount = parseFloat(amountTD.innerText);
+  let newAmount = parsedAmount + currentAmount;
+  amountTD.innerText = newAmount.toString();
+};
+
 PortfolioListView.prototype.display = function(symbol, amount) {
-  var div = document.querySelector(".row");
-  div.style.visibility = "visible";
-  var hide = document.querySelector('#hideme');
-  hide.style.display = "none";
-  this.container.innerHTML += `
-  <tr class='table-row' id=${symbol}>
-  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
-  <td>${symbol}</td>
-  <td></td>
-  <td>${amount}</td>
-  <td id="coin-value"></td>
-  <td></td>
-  <td><button class="btn btn-danger delete-row">x</button></td>
-  </tr>
-  `
-  this.addDeleteButton();
+  let row = this.hasMatch(symbol);
+  if (row === false) {
+    var div = document.querySelector(".row");
+    div.style.visibility = "visible";
+    var hide = document.querySelector('#hideme');
+    hide.style.display = "none";
+    this.container.innerHTML += `
+    <tr class='table-row' id=${symbol}>
+    <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
+    <td>${symbol}</td>
+    <td></td>
+    <td>${amount}</td>
+    <td id="coin-value"></td>
+    <td></td>
+    <td><button class="btn btn-danger delete-row">x</button></td>
+    </tr>
+    `
+    this.addDeleteButton();
+  } else {
+    this.updateAmount(row, amount);
+  }
 };
 
 PortfolioListView.prototype.insertCoinData = function(symbol, data) {
-  console.log("insertCoinData", symbol);
-  let tr = this.container.lastElementChild.children;
-  let result = this.isPositive(data.change.day);
-  let changeContainer = null;
+  if(this.hasMatch(symbol) === false) {
+    let tr = this.container.lastElementChild.children;
+    let result = this.isPositive(data.change.day);
+    let changeContainer = null;
 
-  if (result) {
-    changeContainer = `
-    <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-c'></span></div>
-    `
-    tr[1].innerHTML = "<span class='margin-right ion-arrow-up-c green'></span>" + symbol;
-  } else {
-    changeContainer = `
-    <div class='change red'>${data.change.day}%<span class='ion-arrow-down-c'></span></div>
-    `
-    tr[1].innerHTML = "<span class='margin-right ion-arrow-down-c red'></span>" + symbol;
+    if (result) {
+      changeContainer = `
+      <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-c'></span></div>
+      `
+      tr[1].innerHTML = "<span class='margin-right ion-arrow-up-c green'></span>" + symbol;
+    } else {
+      changeContainer = `
+      <div class='change red'>${data.change.day}%<span class='ion-arrow-down-c'></span></div>
+      `
+      tr[1].innerHTML = "<span class='margin-right ion-arrow-down-c red'></span>" + symbol;
+    }
+
+    const amount = tr[3].innerHTML;
+    tr[2].innerHTML = data.price;
+    tr[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
+    tr[5].innerHTML = changeContainer;
   }
-
-  const amount = tr[3].innerHTML;
-  tr[2].innerHTML = data.price;
-  tr[4].innerHTML = parseFloat(data.price * amount).toFixed(2);
-  tr[5].innerHTML = changeContainer;
+  this.refreshTable();
   this.updatePortfolio();
 };
 
