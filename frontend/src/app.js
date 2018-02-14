@@ -34,9 +34,11 @@ const newsOff = function() {
 }
 
 const userSelectChanged = function() {
+  console.log(this.value);
+  // console.log(this.innerHTML);
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
-  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.innerText);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
   portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
   portfolioData.getData();
 }

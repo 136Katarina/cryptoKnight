@@ -103,9 +103,11 @@ const newsOff = function() {
 }
 
 const userSelectChanged = function() {
+  console.log(this.value);
+  // console.log(this.innerHTML);
   const portfolioList = document.querySelector('#portfolio');
   const portfolioListView = new PortfolioListView(portfolioList);
-  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.innerText);
+  const portfolioData = new PortfolioData("http://localhost:9000/api/portfolio/" + this.value);
   portfolioData.onLoad = portfolioListView.renderProfile.bind(portfolioListView);
   portfolioData.getData();
 }
@@ -411,9 +413,9 @@ PortfolioListView.prototype.getChartData = function() {
 // Rendering Profiles From Database
 
 PortfolioListView.prototype.renderProfile = function(data){
-  // let data = data[0].portfolio;  
+  console.log(data);
   this.container.innerHTML = '';
-  for (datum of data[0].portfolio) {
+  for (datum of data.portfolio) {
     this.display(datum.coin, datum.amount);
   }
   this.refreshTable();

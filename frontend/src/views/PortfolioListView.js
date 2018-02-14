@@ -168,9 +168,9 @@ PortfolioListView.prototype.getChartData = function() {
 // Rendering Profiles From Database
 
 PortfolioListView.prototype.renderProfile = function(data){
-  // let data = data[0].portfolio;  
+  console.log(data);
   this.container.innerHTML = '';
-  for (datum of data[0].portfolio) {
+  for (datum of data.portfolio) {
     this.display(datum.coin, datum.amount);
   }
   this.refreshTable();
