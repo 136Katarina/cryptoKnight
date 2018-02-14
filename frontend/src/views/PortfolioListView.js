@@ -48,24 +48,38 @@ PortfolioListView.prototype.createChart = function() {
 };
 
 PortfolioListView.prototype.display = function(symbol, amount) {
-  var div = document.querySelector(".row");
-  div.style.visibility = "visible";
-  this.container.innerHTML += `
-  <tr class='table-row' id=${symbol}>
-  <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
-  <td>${symbol}</td>
-  <td></td>
-  <td>${amount}</td>
-  <td id="coin-value"></td>
-  <td></td>
-  <td><button class="btn btn-danger delete-row">x</button></td>
-  </tr>
-  `
-  this.addDeleteButton();
+  let row = this.hasMatch(symbol);
+  if(!row){
+    var div = document.querySelector(".row");
+    div.style.visibility = "visible";
+    this.container.innerHTML += `
+    <tr class='table-row' id=${symbol}>
+    <td><img width=35 src="https://chasing-coins.com/api/v1/std/logo/${symbol}" alt="" /></td>
+    <td>${symbol}</td>
+    <td></td>
+    <td>${amount}</td>
+    <td id="coin-value"></td>
+    <td></td>
+    <td><button class="btn btn-danger delete-row">x</button></td>
+    </tr>
+    `
+    this.addDeleteButton();
+  } else {
+    console.log(typeof amount);
+    row.children[3].innerText = (parseFloat(row.children[3].innerText) + parseFloat(amount)).toString();
+  }
+};
+
+PortfolioListView.prototype.hasMatch = function (symbol) {
+  let rows = this.container.children;
+  for(row of rows) {
+    let columnCoin = row.children[1].innerText;
+    if(columnCoin === symbol) return row;
+  }
+  return false;
 };
 
 PortfolioListView.prototype.insertCoinData = function(symbol, data) {
-  console.log("insertCoinData", symbol);
   let tr = this.container.lastElementChild.children;
   let result = this.isPositive(data.change.day);
   let changeContainer = null;
@@ -74,12 +88,10 @@ PortfolioListView.prototype.insertCoinData = function(symbol, data) {
     changeContainer = `
     <div class='change green'>&nbsp;${data.change.day}%<span class='ion-arrow-up-c'></span></div>
     `
-    tr[1].innerHTML = "<span class='margin-right ion-arrow-up-c green'></span>" + symbol;
   } else {
     changeContainer = `
     <div class='change red'>${data.change.day}%<span class='ion-arrow-down-c'></span></div>
     `
-    tr[1].innerHTML = "<span class='margin-right ion-arrow-down-c red'></span>" + symbol;
   }
 
   const amount = tr[3].innerHTML;
